@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>인천공항 T2 · 장기 탑승장4 북측타워</title>
+<style>
+  :root{
+    color-scheme: dark;   /* 기기 설정과 무관하게 항상 다크 고정 */
+    --bg:#0e1116; --card:#171b22; --card2:#1e232c; --line:#2a3039;
+    --txt:#e8edf4; --sub:#9aa5b4; --accent:#3d9bff; --good:#28c76f;
+    --warn:#ff9f43; --bad:#ff5b5b; --chip:#232935;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ margin:0; background:var(--bg); color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Malgun Gothic",sans-serif;
+    padding:14px 12px 40px; max-width:520px; margin:0 auto; }
+  h1{ font-size:18px; margin:4px 2px 2px; }
+  .muted{ color:var(--sub); font-size:12px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:16px; margin-top:14px; }
+  .card h2{ font-size:14px; margin:0 0 12px; display:flex; align-items:center; gap:8px; }
+  .card h2 .dot{ width:8px;height:8px;border-radius:50%;background:var(--accent); flex:none; }
+  .row{ display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:11px 0; border-top:1px solid var(--line); }
+  .row:first-of-type{ border-top:none; }
+  .unit{ font-size:13px; color:var(--sub); margin-left:3px; font-weight:500; }
+  .chip{ font-size:11px; background:var(--chip); color:var(--sub);
+    padding:3px 8px; border-radius:999px; }
+  .arr-time{ font-variant-numeric:tabular-nums; font-weight:700; font-size:26px; }
+  .soon{ color:var(--good); } .mid{ color:var(--warn); } .far{ color:var(--txt); }
+  .bar{ height:10px; border-radius:999px; background:var(--line); overflow:hidden; margin-top:8px; }
+  .bar > i{ display:block; height:100%; border-radius:999px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .stat{ background:var(--card2); border-radius:12px; padding:8px 10px; text-align:center; }
+  .stat .n{ font-size:24px; font-weight:700; } .stat .l{ font-size:11px; color:var(--sub); margin-top:2px; }
+  .updated{ font-size:11px; color:var(--sub); margin-top:10px; text-align:right; }
+  button{ font:inherit; color:var(--txt); background:var(--card2); border:1px solid var(--line);
+    border-radius:10px; padding:9px 12px; cursor:pointer; }
+  button.primary{ background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+  input{ font:inherit; width:100%; background:var(--card2); border:1px solid var(--line);
+    color:var(--txt); border-radius:10px; padding:10px 11px; }
+  label{ font-size:12px; color:var(--sub); display:block; margin:10px 0 5px; }
+  details{ margin-top:10px; } summary{ cursor:pointer; color:var(--sub); font-size:13px; padding:6px 0; }
+  .toolbar{ display:flex; gap:8px; align-items:center; margin-top:10px; }
+  .toolbar button{ flex:1; }
+  .err{ color:var(--bad); font-size:12px; margin-top:8px; white-space:pre-wrap; }
+  .switch{ display:flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; color:var(--sub); }
+  .list-mini{ font-size:12px; color:var(--sub); max-height:260px; overflow:auto; margin-top:8px;
+    font-variant-numeric:tabular-nums; }
+  .list-mini div{ padding:4px 0; border-top:1px dashed var(--line); }
+  .list-mini b{ display:inline-block; width:24px; color:var(--txt); }
+  .list-mini sup{ font-size:8px; }
+  .empty{ color:var(--sub); font-size:13px; padding:6px 0; }
+  .subhead{ font-size:13px; font-weight:700; color:var(--txt); margin:0 0 6px; display:flex; align-items:center; gap:7px; }
+  .subhead .d{ width:7px; height:7px; border-radius:50%; display:inline-block; flex:none; }
+  .divider{ border:none; border-top:1px solid var(--line); margin:14px 0 12px; }
+  code{ background:var(--chip); padding:1px 5px; border-radius:5px; font-size:11px; }
+
+  /* ===== 디자인 리프레시 ===== */
+  body{ background:
+    radial-gradient(1100px 380px at 50% -12%, color-mix(in srgb,var(--accent) 9%, transparent), transparent),
+    var(--bg); }
+  h1{ font-size:21px; font-weight:800; letter-spacing:-.02em; display:flex; align-items:center; gap:10px; line-height:1.2; }
+  h1 .i{ width:24px; height:24px; color:var(--accent); }
+  #clock{ display:flex; align-items:center; gap:6px; margin-top:4px; }
+  #clock .i{ width:13px; height:13px; color:var(--sub); }
+  .card{ border-radius:20px; box-shadow:0 8px 24px -16px rgba(8,12,20,.5); }
+  .card h2{ font-size:18px; font-weight:750; letter-spacing:-.015em; margin-bottom:15px; }
+  .card h2.big{ font-size:20px; }
+  .ic{ width:34px; height:34px; border-radius:11px; display:inline-flex; align-items:center; justify-content:center; flex:none; }
+  .ic .i{ width:20px; height:20px; }
+  .ic-green{  background:color-mix(in srgb,var(--good) 15%, transparent);   color:var(--good); }
+  .ic-blue{   background:color-mix(in srgb,var(--accent) 15%, transparent); color:var(--accent); }
+  .ic-orange{ background:color-mix(in srgb,var(--warn) 16%, transparent);   color:var(--warn); }
+  .i{ display:inline-block; vertical-align:middle; fill:currentColor; }
+  .subhead{ font-size:14px; letter-spacing:-.01em; }
+  .subhead .i{ width:17px; height:17px; }
+  .subhead.sh-air{ color:var(--accent); } .subhead.sh-co{ color:var(--warn); }
+  .divider{ margin:16px 0 13px; }
+  .arr-time{ letter-spacing:-.01em; }
+  .chip{ font-weight:600; }
+  button{ border-radius:12px; transition:transform .05s ease, filter .15s ease; }
+  button:active{ transform:translateY(1px); }
+  button.primary{ box-shadow:0 8px 18px -9px color-mix(in srgb,var(--accent) 85%, transparent); }
+  button.primary:hover{ filter:brightness(1.06); }
+  summary{ transition:color .15s; } summary:hover{ color:var(--txt); }
+  #t1Btn{ border-radius:999px; }
+</style>
+</head>
+<body>
+  <!-- 인라인 SVG 아이콘 스프라이트 (외부 의존 없음) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-plane" viewBox="0 0 24 24"><path d="M21 15.5v-1.7l-7.5-4.6V4.4a1.5 1.5 0 0 0-3 0v4.8L3 13.8v1.7l7.5-2.3v4.6l-2 1.4v1.3l3.5-1 3.5 1v-1.3l-2-1.4v-4.6l7.5 2.3Z"/></symbol>
+    <symbol id="i-parking" viewBox="0 0 24 24"><path d="M6 3h6.5a5.25 5.25 0 0 1 0 10.5H9.5V21h-3.5V3Zm3.5 7.2h3a2.25 2.25 0 0 0 0-4.5h-3v4.5Z"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v9.5a2 2 0 0 1-1 1.73V19a1 1 0 0 1-1 1h-1.2a1 1 0 0 1-1-1v-1H7.2v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.77A2 2 0 0 1 3 14.5V5a2 2 0 0 1 2-2Zm1.2 4v3.6h4.9V7H6.2Zm6.7 0v3.6h4.9V7h-4.9ZM7.2 13.2a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8Zm9.6 0a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8Z"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6h4.5a1 1 0 0 1 1 1v10h-6.5v-3.5h-2.5V21H4Zm3-12.5h2.2V6.3H7v2.2Zm4 0h2.2V6.3H11v2.2ZM7 13h2.2v-2.2H7V13Zm4 0h2.2v-2.2H11V13Zm-4 4.4h2.2v-2.2H7v2.2Zm9.8 0H19v-2.2h-2.2v2.2Z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm.9-13H11v6l5.1 3.06.9-1.66-4.1-2.43V7Z"/></symbol>
+  </svg>
+
+  <h1><svg class="i"><use href="#i-plane"/></svg>인천공항 T2 · 장기 탑승장4 북측타워</h1>
+  <div class="muted" id="clock"><svg class="i"><use href="#i-clock"/></svg><span id="clockTxt">—</span></div>
+
+  <!-- ====== 주차 현황 (최상단) ====== -->
+  <div class="card">
+    <h2><span class="ic ic-green"><svg class="i"><use href="#i-parking"/></svg></span>주차면 현황
+      <button id="t1Btn" style="margin-left:auto;padding:5px 10px;font-size:12px">T1 보기</button>
+    </h2>
+    <div id="parkBody"><div class="empty">불러오는 중…</div></div>
+    <div class="updated" id="parkUpdated"></div>
+    <div class="err" id="parkErr"></div>
+  </div>
+
+  <!-- ====== 공항 셔틀 · 북측타워(탑승장4) 출발 ====== -->
+  <div class="card">
+    <h2 class="big"><span class="ic ic-blue"><svg class="i"><use href="#i-bus"/></svg></span>북측타워 출발</h2>
+    <div class="subhead sh-air"><svg class="i"><use href="#i-bus"/></svg>공항셔틀</div>
+    <div id="air_north"><div class="empty">계산 중…</div></div>
+    <div class="muted" style="margin-top:6px">장기탑승장4(북측주차타워) → 제2여객터미널 · <b>시간표 기준</b></div>
+    <details>
+      <summary>전체 시간표 · 주황=급행</summary>
+      <div class="list-mini" id="tt_north"></div>
+    </details>
+  </div>
+
+  <!-- ====== 2청사 출발 (공항셔틀 + 회사셔틀) ====== -->
+  <div class="card">
+    <h2 class="big"><span class="ic ic-orange"><svg class="i"><use href="#i-bus"/></svg></span>2청사 출발</h2>
+
+    <div class="subhead sh-co"><svg class="i"><use href="#i-building"/></svg>회사셔틀</div>
+    <div id="coBody"><div class="empty">계산 중…</div></div>
+    <div class="muted" id="coInfo" style="margin-top:6px"></div>
+
+    <hr class="divider">
+    <div class="subhead sh-air"><svg class="i"><use href="#i-bus"/></svg>공항셔틀</div>
+    <div id="air_t2"><div class="empty">계산 중…</div></div>
+    <div class="muted" style="margin-top:6px">제2여객터미널 → 장기탑승장/주차타워 · <b>시간표 기준</b></div>
+    <details>
+      <summary>전체 시간표</summary>
+      <div class="list-mini" id="tt_t2"></div>
+    </details>
+  </div>
+
+  <div class="toolbar">
+    <button class="primary" id="refreshBtn">주차 새로고침</button>
+    <button id="autoBtn">자동: 켜짐</button>
+  </div>
+
+  <!-- ====== 설정 ====== -->
+  <details id="settings">
+    <summary>⚙️ 설정 (주차 필터)</summary>
+    <label>주차장 필터 키워드 (응답 floor 매칭 · 기본 T2 타워)</label>
+    <input id="fPark" placeholder="예: T2 P / 주차타워 / T2 장기" />
+    <div class="toolbar">
+      <button class="primary" id="saveBtn">저장</button>
+      <button id="rawBtn">주차 전체 원본</button>
+    </div>
+    <div class="list-mini" id="rawOut"></div>
+  </details>
+
+<script>
+"use strict";
+const LS = "icn_t2_north_tower_v1";
+const el = id => document.getElementById(id);
+
+// ================================================================
+//  공항 셔틀 출발 시간표 — 인천공항공사 엑셀(260213~) 그대로 내장
+//  값 = 자정 이후 '분'. [분,"급"] = 급행. north=탑승장4(북측), t2=제2여객터미널
+// ================================================================
+const DEFAULT_TT = {
+  north: [5,12,42,72,102,162,192,222,252,257,262,267,272,[276,"급"],277,282,287,[288,"급"],292,297,[300,"급"],302,307,312,[312,"급"],318,324,[324,"급"],330,336,[336,"급"],342,348,[349,"급"],354,360,[362,"급"],366,371,[375,"급"],377,383,[388,"급"],389,395,401,[401,"급"],407,413,[414,"급"],419,425,[427,"급"],431,436,[440,"급"],441,446,451,[454,"급"],455,461,[464,"급"],466,471,[475,"급"],476,481,[484,"급"],486,491,[493,"급"],496,501,506,[510,"급"],511,516,521,526,[527,"급"],531,536,541,[544,"급"],547,553,559,[561,"급"],565,571,577,[578,"급"],583,589,595,[595,"급"],601,607,612,[612,"급"],617,622,627,[629,"급"],632,637,642,[646,"급"],647,652,657,662,[663,"급"],667,672,677,[680,"급"],682,687,692,[697,"급"],698,704,710,[714,"급"],716,722,728,[731,"급"],734,740,746,[748,"급"],752,758,764,[765,"급"],770,776,782,[782,"급"],788,793,798,[799,"급"],803,808,813,[816,"급"],818,823,828,833,[833,"급"],838,843,848,[850,"급"],853,858,863,[867,"급"],868,873,879,[884,"급"],885,891,897,[901,"급"],903,909,915,[918,"급"],921,927,933,[935,"급"],939,945,951,[952,"급"],957,963,969,[969,"급"],974,979,984,[986,"급"],989,994,999,[1003,"급"],1004,1009,1014,1019,[1020,"급"],1024,1030,1036,[1037,"급"],1042,[1047,"급"],1048,1054,[1055,"급"],1060,[1062,"급"],1066,1072,1078,[1079,"급"],1084,1090,[1094,"급"],1095,1100,[1102,"급"],1105,1110,1115,[1116,"급"],1120,1125,1130,[1131,"급"],1135,1140,1145,[1146,"급"],1151,1157,[1161,"급"],1163,1169,1175,[1176,"급"],1181,1187,[1191,"급"],1193,1199,1205,[1206,"급"],1211,1217,[1221,"급"],1223,1229,1235,[1236,"급"],1241,1247,[1251,"급"],1253,1259,1265,[1266,"급"],1271,1277,[1281,"급"],1283,1289,1295,[1296,"급"],1301,1307,[1311,"급"],1313,1319,1325,[1326,"급"],1331,1337,1343,[1346,"급"],1349,1355,1361,[1366,"급"],1367,1373,1379,1385,[1386,"급"],1391,1397,1403,[1406,"급"],1409,1415,1421,[1421,"급"],1427,1433,1439],
+  t2: [2,8,14,21,51,81,111,171,201,231,261,266,271,276,281,286,291,296,301,306,311,316,321,327,333,339,345,351,357,363,369,375,380,386,392,398,404,410,416,422,428,434,440,445,450,455,460,464,470,475,480,485,490,495,500,505,510,515,520,525,530,535,540,545,550,556,562,568,574,580,586,592,598,604,610,616,621,626,631,636,641,646,651,656,661,666,671,676,681,686,691,696,701,707,713,719,725,731,737,743,749,755,761,767,773,779,785,791,797,802,807,812,817,822,827,832,837,842,847,852,857,862,867,872,877,882,888,894,900,906,912,918,924,930,936,942,948,954,960,966,972,978,983,988,993,998,1003,1008,1013,1018,1023,1028,1033,1039,1045,1051,1057,1063,1069,1075,1081,1087,1093,1099,1104,1109,1114,1119,1124,1129,1134,1139,1144,1149,1154,1160,1166,1172,1178,1184,1190,1196,1204,1209,1214,1220,1226,1232,1238,1244,1250,1256,1264,1269,1274,1280,1286,1292,1298,1304,1310,1316,1324,1329,1334,1340,1346,1352,1358,1364,1370,1376,1384,1389,1394,1400,1406,1412,1418,1424,1430,1436]
+};
+const TT_META = {
+  north: { body:"air_north", table:"tt_north" },
+  t2:    { body:"air_t2",    table:"tt_t2" }
+};
+function ttList(key){
+  return (DEFAULT_TT[key]||[]).map(e => Array.isArray(e) ? {min:e[0], tag:e[1]} : {min:e, tag:""});
+}
+function classForMin(m){ return m <= 3 ? "soon" : (m <= 8 ? "mid" : "far"); }
+function fmtCountdown(ts){
+  const secs = Math.max(0, Math.round((ts - Date.now())/1000));
+  const mm = Math.floor(secs/60), ss = secs%60;
+  return { secs, cls: classForMin(secs/60), mmss:`${mm}:${String(ss).padStart(2,"0")}` };
+}
+function nextDep(key, from, count){
+  const list = ttList(key);
+  const midnight = new Date(from); midnight.setHours(0,0,0,0);
+  const nowMin = (from - midnight.getTime())/60000;
+  const out = [];
+  for(const d of list){ if(d.min > nowMin - (1/60)){ out.push({...d, ts: midnight.getTime()+d.min*60000}); if(out.length>=count) break; } }
+  for(let i=0; out.length<count && i<list.length; i++){ const d=list[i]; out.push({...d, ts: midnight.getTime()+86400000+d.min*60000}); }
+  return out;
+}
+function renderShuttle(key){
+  const bodyEl = el(TT_META[key].body); if(!bodyEl) return;
+  const deps = nextDep(key, Date.now(), 3);
+  if(!deps.length){ bodyEl.innerHTML = `<div class="empty">시간표 없음</div>`; return; }
+  bodyEl.innerHTML = deps.map((d,i)=>{
+    const c = fmtCountdown(d.ts);
+    const hh = new Date(d.ts).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
+    return `<div class="row">
+      <div><div style="font-weight:600">${hh} 출발 ${d.tag?'<span class="chip" style="color:var(--warn)">급행</span>':''}</div>
+        <div class="muted">${i===0?"다음 출발":"그 다음"}</div></div>
+      <div class="arr-time ${c.cls}">${c.secs<=0?"곧 출발":c.mmss}</div>
+    </div>`;
+  }).join("");
+}
+function renderTTtable(key){
+  const tEl = el(TT_META[key].table); if(!tEl) return;
+  const byH = {};
+  ttList(key).forEach(d=>{ const h=Math.floor(d.min/60)%24; (byH[h]=byH[h]||[]).push(d); });
+  let rows="";
+  for(let h=0; h<24; h++){ const arr=byH[h]; if(!arr) continue;
+    const cells = arr.map(d=>{ const mm=String(d.min%60).padStart(2,"0");
+      return d.tag ? `<span style="color:var(--warn)">${mm}<sup>급</sup></span>` : mm; }).join(" ");
+    rows += `<div><b>${String(h).padStart(2,"0")}</b> ${cells}</div>`;
+  }
+  tEl.innerHTML = rows;
+}
+function renderShuttleAll(){ Object.keys(TT_META).forEach(renderShuttle); }
+
+// ---------- 회사 셔틀 (고정 시간표, API 없음) ----------
+// 05:00~07:00, 17:00~19:00 : 10분 간격 / 그 외 05:00~21:00 : 20분 간격
+function isCoPeak(min){ return (min>=300 && min<420) || (min>=1020 && min<1140); }
+function coValid(min){
+  if(min < 300 || min > 1260) return false;
+  return isCoPeak(min) ? (min%10===0) : (min%20===0);
+}
+function nextCoDepartures(from, count){
+  const base = new Date(from); base.setSeconds(0,0);
+  const out = [];
+  for(let i=0; i<24*60 && out.length<count; i++){
+    const d = new Date(base.getTime() + i*60000);
+    if(d.getTime() >= from-999 && coValid(d.getHours()*60 + d.getMinutes())) out.push(d.getTime());
+  }
+  return out;
+}
+function renderCompany(){
+  const deps = nextCoDepartures(Date.now(), 3);
+  if(deps.length === 0){
+    el("coBody").innerHTML = `<div class="empty">현재 운행 시간이 아닙니다. (운행 05:00~21:00)</div>`;
+    el("coInfo").textContent = ""; return;
+  }
+  el("coBody").innerHTML = deps.map((ts,i)=>{
+    const c = fmtCountdown(ts);
+    const hhmm = new Date(ts).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
+    const peak = isCoPeak(new Date(ts).getHours()*60 + new Date(ts).getMinutes());
+    return `<div class="row">
+      <div><div style="font-weight:600">${hhmm} 출발</div>
+        <div class="muted">${i===0?"다음 출발":"그 다음"} · ${peak?"10분 간격":"20분 간격"}</div></div>
+      <div class="arr-time ${c.cls}">${c.secs<=0?"곧 출발":c.mmss}</div>
+    </div>`;
+  }).join("");
+  el("coInfo").innerHTML = "운행 05:00~21:00 · 피크(05–07, 17–19시) 10분 · 그 외 20분 간격";
+}
+
+// ================================================================
+//  주차 현황 — 서버리스 함수 /api/parking 호출 (서비스키는 Vercel 환경변수에만)
+// ================================================================
+const defaults = { fPark:"T2 P", hideT1:true };
+let cfg = Object.assign({}, defaults, JSON.parse(localStorage.getItem(LS) || "{}"));
+function saveCfg(){ localStorage.setItem(LS, JSON.stringify(cfg)); }
+function fillForm(){ el("fPark").value = cfg.fPark; }
+function readForm(){ cfg.fPark = el("fPark").value.trim(); saveCfg(); }
+fillForm();
+
+async function fetchParking(){
+  const res = await fetch("/api/parking", { cache:"no-store" });
+  const text = await res.text();
+  let data; try{ data = JSON.parse(text); }
+  catch(e){ throw new Error("응답 파싱 실패 (서버리스 함수 확인):\n" + text.slice(0,200)); }
+  if(data && data.error) throw new Error(data.error);
+  const hdr = data?.response?.header;
+  if(hdr && hdr.resultCode && hdr.resultCode !== "00" && hdr.resultCode !== "0")
+    throw new Error("API 오류 " + hdr.resultCode + " · " + (hdr.resultMsg||""));
+  return data;
+}
+function toItems(data){ let it = data?.response?.body?.items; if(!it) return []; if(it.item) it=it.item; return Array.isArray(it)?it:[it]; }
+
+async function loadParking(){
+  el("parkErr").textContent = "";
+  try{
+    const items = toItems(await fetchParking());
+    const kw = cfg.fPark;
+    const matched = items.filter(x => {
+      const f = String(x.floor ?? "");
+      if(cfg.hideT1 && /(^|\s)T1/.test(f)) return false;
+      return !kw || f.includes(kw);
+    });
+    matched.sort((a,b)=> String(b.floor??"").localeCompare(String(a.floor??""), "ko")); // P2 → P1 (내림차순)
+    const body = el("parkBody");
+    if(matched.length === 0){
+      body.innerHTML = `<div class="empty">필터 "<b>${kw||"(없음)"}</b>"에 맞는 주차장이 없습니다. '주차 전체 원본'에서 실제 floor 값을 확인하세요. (수신 ${items.length}건)</div>`;
+    } else {
+      body.innerHTML = matched.map(x=>{
+        const total = parseInt(x.parkingarea)||0, used = parseInt(x.parking)||0;
+        const free = Math.max(0, total-used), pct = total>0 ? Math.min(100, Math.round(used/total*100)) : 0;
+        const off = total===0;
+        const color = off ? "var(--sub)" : (free<100 ? "var(--bad)" : free<200 ? "var(--warn)" : "var(--good)");
+        // P1 타워는 P2보다 작게(컴팩트 한 줄)로 표현
+        if(/(^|\s)T2 P1\b/.test(String(x.floor ?? ""))){
+          return `<div style="padding:2px 0">
+            <div class="row" style="border-top:none;padding:5px 0">
+              <div style="font-size:12.5px;color:var(--sub);font-weight:600">${x.floor ?? ""}</div>
+              <div style="font-size:14px;font-variant-numeric:tabular-nums">
+                <b style="color:${color}">${off?"—":free}</b> <span class="muted">가능 · ${off?"—":used+"/"+total} · ${off?"미운영":pct+"%"}</span>
+              </div>
+            </div>
+            <div class="bar" style="height:5px"><i style="width:${pct}%;background:${color}"></i></div>
+          </div>`;
+        }
+        return `<div style="padding:2px 0">
+          <div class="row" style="border-top:none;padding:4px 0">
+            <div style="font-weight:600">${x.floor ?? ""}</div>
+            <span class="chip">${off ? "미운영" : pct+"% 사용"}</span>
+          </div>
+          <div class="grid2">
+            <div class="stat"><div class="n" style="color:${color}">${off?"—":free}</div><div class="l">주차 가능</div></div>
+            <div class="stat"><div class="n" style="font-size:18px;white-space:nowrap">${off?"—":used+" / "+total}</div><div class="l">주차 / 총면수</div></div>
+          </div>
+          <div class="bar"><i style="width:${pct}%;background:${color}"></i></div>
+          <div class="updated" style="margin-top:4px">현황시각 ${x.datetm ?? "-"}</div>
+        </div>`;
+      }).join("");
+    }
+    el("parkUpdated").textContent = "갱신 " + new Date().toLocaleTimeString("ko-KR");
+  } catch(e){
+    el("parkBody").innerHTML = "";
+    el("parkErr").textContent = "주차 조회 실패: " + e.message;
+  }
+}
+async function loadRaw(){
+  const out = el("rawOut"); out.innerHTML = "불러오는 중…";
+  try{
+    const its = toItems(await fetchParking());
+    out.innerHTML = "<b>주차 floor · 주차/총면수 · 시각</b>" +
+      its.map(x=>`<div>${x.floor??"?"} · ${x.parking??""}/${x.parkingarea??""} · ${x.datetm??""}</div>`).join("");
+  } catch(e){ out.innerHTML = `<div class="err">${e.message}</div>`; }
+}
+
+// ---------- 타이머 ----------
+let autoOn = true, autoTimer = null;
+function setAuto(on){
+  autoOn = on; el("autoBtn").textContent = "자동: " + (on?"켜짐":"꺼짐");
+  if(autoTimer) clearInterval(autoTimer);
+  if(on) autoTimer = setInterval(loadParking, 30000);
+}
+setInterval(()=>{
+  el("clockTxt").textContent = new Date().toLocaleString("ko-KR");
+  renderShuttleAll();
+  renderCompany();
+}, 1000);
+
+function syncT1Btn(){ el("t1Btn").textContent = cfg.hideT1 ? "T1 보기" : "T1 숨기기"; }
+el("t1Btn").onclick = ()=>{ cfg.hideT1 = !cfg.hideT1; saveCfg(); syncT1Btn(); loadParking(); };
+el("refreshBtn").onclick = loadParking;
+el("autoBtn").onclick = ()=> setAuto(!autoOn);
+el("saveBtn").onclick = ()=>{ readForm(); el("settings").open=false; loadParking(); };
+el("rawBtn").onclick = loadRaw;
+
+// ---------- 시작 ----------
+el("clockTxt").textContent = new Date().toLocaleString("ko-KR");
+syncT1Btn();
+renderTTtable("north"); renderTTtable("t2");
+renderShuttleAll();
+renderCompany();
+loadParking();
+setAuto(true);
+</script>
+</body>
+</html>
