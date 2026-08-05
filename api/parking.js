@@ -7,10 +7,14 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "환경변수 DATA_GO_KR_KEY 가 설정되지 않았습니다. Vercel 프로젝트 설정에서 추가하세요." });
     return;
   }
-  // serviceKey 는 인코딩(Encoding)된 값을 그대로 붙입니다.
+  // Encoding/Decoding 어느 키를 넣어도 되도록 정규화:
+  // 한 번 디코드(이미 raw면 대부분 그대로) 후 다시 인코딩하면 항상 올바른 형태가 됨.
+  let sk = key.trim();
+  try { sk = decodeURIComponent(sk); } catch (_) { /* 잘못된 %시퀀스면 원본 유지 */ }
+  sk = encodeURIComponent(sk);
   const url =
     "https://apis.data.go.kr/B551177/StatusOfParking/getTrackingParking" +
-    "?numOfRows=100&pageNo=1&type=json&serviceKey=" + key;
+    "?numOfRows=100&pageNo=1&type=json&serviceKey=" + sk;
   try {
     const upstream = await fetch(url);
     const text = await upstream.text();

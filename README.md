@@ -17,7 +17,7 @@
 1. 이 저장소를 Vercel에 Import
 2. **Settings → Environment Variables** 에 추가:
    - Name: `DATA_GO_KR_KEY`
-   - Value: 공공데이터포털에서 발급받은 **Encoding(인코딩)** 서비스키
+   - Value: 공공데이터포털 서비스키 (**Encoding·Decoding 아무거나** — 함수가 자동 정규화)
    - Environments: Production, Preview, Development 모두 체크
 3. Deploy (또는 재배포)
 
