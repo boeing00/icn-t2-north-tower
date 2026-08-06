@@ -16,9 +16,10 @@
 <style>
   :root{
     color-scheme: dark;   /* 기기 설정과 무관하게 항상 다크 고정 */
-    --bg:#0e1116; --card:#171b22; --card2:#1e232c; --line:#2a3039;
-    --txt:#e8edf4; --sub:#9aa5b4; --accent:#3d9bff; --good:#28c76f;
-    --warn:#ff9f43; --bad:#ff5b5b; --chip:#232935;
+    /* Nocturne 톤 — 깊은 나이트 배경 + 문라이트 인디고 액센트 */
+    --bg:#0a0d13; --card:#141a25; --card2:#1c2434; --line:#293142;
+    --txt:#eaeef7; --sub:#96a2b6; --accent:#6c8cff; --good:#34d399;
+    --warn:#f5b53f; --bad:#f2727d; --chip:#212a3b;
   }
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body{ margin:0; background:var(--bg); color:var(--txt);
@@ -103,6 +104,14 @@
     background:var(--card2); color:var(--txt); border:1px solid var(--line); cursor:pointer; transition:all .15s; }
   .tab.on{ background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700;
     box-shadow:0 8px 18px -9px color-mix(in srgb,var(--accent) 85%, transparent); }
+
+  /* ===== Nocturne 톤 마감 ===== */
+  body{ background:
+    radial-gradient(1200px 480px at 50% -14%, color-mix(in srgb,var(--accent) 14%, transparent), transparent),
+    var(--bg); }
+  .card{ border-radius:22px; box-shadow:0 14px 34px -20px rgba(0,0,0,.7); }
+  button.primary, .tab.on{ background-image:linear-gradient(180deg, color-mix(in srgb,var(--accent) 86%, #fff), var(--accent)); }
+  .arr-time{ text-shadow:0 0 24px color-mix(in srgb, currentColor 30%, transparent); }
 </style>
 </head>
 <body>
