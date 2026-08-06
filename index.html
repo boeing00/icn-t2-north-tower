@@ -98,6 +98,11 @@
   .foot{ text-align:center; color:var(--sub); font-size:11px; line-height:1.7; margin:24px 4px 4px; }
   .foot a{ color:var(--accent); text-decoration:none; }
   .foot a:hover{ text-decoration:underline; }
+  .tabs{ display:flex; gap:8px; margin-top:14px; }
+  .tab{ flex:1; font:inherit; font-size:16px; font-weight:500; padding:14px 12px; border-radius:12px;
+    background:var(--card2); color:var(--txt); border:1px solid var(--line); cursor:pointer; transition:all .15s; }
+  .tab.on{ background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700;
+    box-shadow:0 8px 18px -9px color-mix(in srgb,var(--accent) 85%, transparent); }
 </style>
 </head>
 <body>
@@ -123,9 +128,15 @@
     <div class="err" id="parkErr"></div>
   </div>
 
+  <!-- ====== 탭 전환 (North Tower / Terminal 2) ====== -->
+  <div class="tabs">
+    <button id="tabNorth" class="tab">North Tower</button>
+    <button id="tabT2" class="tab">Terminal 2</button>
+  </div>
+
   <!-- ====== 공항 셔틀 · 북측타워(탑승장4) 출발 ====== -->
-  <div class="card">
-    <h2 class="big"><span class="ic ic-blue"><svg class="i"><use href="#i-bus"/></svg></span>북측타워 출발</h2>
+  <div class="card" id="card_north">
+    <h2 class="big"><span class="ic ic-blue"><svg class="i"><use href="#i-bus"/></svg></span>North Tower 출발</h2>
     <div class="subhead sh-co"><svg class="i"><use href="#i-building"/></svg>회사셔틀</div>
     <div id="coNorthBody"><div class="empty">계산 중…</div></div>
     <div class="muted" id="coNorthInfo" style="margin-top:6px"></div>
@@ -141,8 +152,8 @@
   </div>
 
   <!-- ====== 2청사 출발 (공항셔틀 + 회사셔틀) ====== -->
-  <div class="card">
-    <h2 class="big"><span class="ic ic-orange"><svg class="i"><use href="#i-bus"/></svg></span>2청사 출발</h2>
+  <div class="card" id="card_t2">
+    <h2 class="big"><span class="ic ic-orange"><svg class="i"><use href="#i-bus"/></svg></span>Terminal 2 출발</h2>
 
     <div class="subhead sh-co"><svg class="i"><use href="#i-building"/></svg>회사셔틀</div>
     <div id="coBody"><div class="empty">계산 중…</div></div>
@@ -284,7 +295,7 @@ function renderCompany(){
   renderCompanyInto("coBody", 0);        // 2청사 출발
   renderCompanyInto("coNorthBody", 5);   // 북측타워 출발 = 2청사 +5분
   if(el("coInfo")) el("coInfo").innerHTML = CO_INFO;
-  if(el("coNorthInfo")) el("coNorthInfo").innerHTML = "2청사 출발 5분 후 · " + CO_INFO;
+  if(el("coNorthInfo")) el("coNorthInfo").innerHTML = "Terminal 2 출발 5분 후 · " + CO_INFO;
 }
 
 // ================================================================
@@ -391,9 +402,21 @@ el("autoBtn").onclick = ()=> setAuto(!autoOn);
 el("saveBtn").onclick = ()=>{ readForm(); el("settings").open=false; loadParking(); };
 el("rawBtn").onclick = loadRaw;
 
+// ---------- 탭 전환 (North Tower / Terminal 2) ----------
+let activeTab = "both";
+function applyTabs(){
+  el("card_north").style.display = activeTab!=="t2"    ? "" : "none";
+  el("card_t2").style.display    = activeTab!=="north" ? "" : "none";
+  el("tabNorth").classList.toggle("on", activeTab==="north" || activeTab==="both");
+  el("tabT2").classList.toggle("on",    activeTab==="t2"    || activeTab==="both");
+}
+el("tabNorth").onclick = ()=>{ activeTab = activeTab==="north" ? "both" : "north"; applyTabs(); };
+el("tabT2").onclick    = ()=>{ activeTab = activeTab==="t2"    ? "both" : "t2";    applyTabs(); };
+
 // ---------- 시작 ----------
 el("clockTxt").textContent = new Date().toLocaleString("ko-KR");
 syncT1Btn();
+applyTabs();
 renderTTtable("north"); renderTTtable("t2");
 renderShuttleAll();
 renderCompany();
