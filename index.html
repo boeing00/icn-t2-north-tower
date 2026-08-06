@@ -126,6 +126,11 @@
   <!-- ====== 공항 셔틀 · 북측타워(탑승장4) 출발 ====== -->
   <div class="card">
     <h2 class="big"><span class="ic ic-blue"><svg class="i"><use href="#i-bus"/></svg></span>북측타워 출발</h2>
+    <div class="subhead sh-co"><svg class="i"><use href="#i-building"/></svg>회사셔틀</div>
+    <div id="coNorthBody"><div class="empty">계산 중…</div></div>
+    <div class="muted" id="coNorthInfo" style="margin-top:6px"></div>
+
+    <hr class="divider">
     <div class="subhead sh-air"><svg class="i"><use href="#i-bus"/></svg>공항셔틀</div>
     <div id="air_north"><div class="empty">계산 중…</div></div>
     <div class="muted" style="margin-top:6px">장기탑승장4(북측주차타워) → 제2여객터미널 · <b>시간표 기준</b></div>
@@ -240,37 +245,46 @@ function renderShuttleAll(){ Object.keys(TT_META).forEach(renderShuttle); }
 
 // ---------- 회사 셔틀 (고정 시간표, API 없음) ----------
 // 05:00~07:00, 17:00~19:00 : 10분 간격 / 그 외 05:00~21:00 : 20분 간격
-function isCoPeak(min){ return (min>=300 && min<420) || (min>=1020 && min<1140); }
+function isCoPeak(min){ return (min>=300 && min<420) || (min>=1020 && min<1140); } // 05–07, 17–19시
 function coValid(min){
-  if(min < 300 || min > 1260) return false;
+  if(min < 240 || min > 1260) return false;   // 04:00 ~ 21:00 운행
   return isCoPeak(min) ? (min%10===0) : (min%20===0);
 }
-function nextCoDepartures(from, count){
+// offsetMin: 2청사 출발시각 기준 오프셋(북측타워 = 2청사 출발 +5분)
+function nextCoDepartures(from, count, offsetMin){
+  offsetMin = offsetMin || 0;
   const base = new Date(from); base.setSeconds(0,0);
   const out = [];
-  for(let i=0; i<24*60 && out.length<count; i++){
+  for(let i=-(offsetMin+1); i<24*60 && out.length<count; i++){
     const d = new Date(base.getTime() + i*60000);
-    if(d.getTime() >= from-999 && coValid(d.getHours()*60 + d.getMinutes())) out.push(d.getTime());
+    if(!coValid(d.getHours()*60 + d.getMinutes())) continue;
+    const depTs = d.getTime() + offsetMin*60000;
+    if(depTs >= from-999) out.push(depTs);
   }
   return out;
 }
-function renderCompany(){
-  const deps = nextCoDepartures(Date.now(), 3);
-  if(deps.length === 0){
-    el("coBody").innerHTML = `<div class="empty">현재 운행 시간이 아닙니다. (운행 05:00~21:00)</div>`;
-    el("coInfo").textContent = ""; return;
-  }
-  el("coBody").innerHTML = deps.map((ts,i)=>{
+const CO_INFO = "운행 04:00~21:00 · 피크(05–07, 17–19시) 10분 · 그 외 20분 간격";
+function renderCompanyInto(bodyId, offsetMin){
+  const bodyEl = el(bodyId); if(!bodyEl) return;
+  const deps = nextCoDepartures(Date.now(), 3, offsetMin);
+  if(deps.length === 0){ bodyEl.innerHTML = `<div class="empty">현재 운행 시간이 아닙니다. (운행 04:00~21:00)</div>`; return; }
+  bodyEl.innerHTML = deps.map((ts,i)=>{
     const c = fmtCountdown(ts);
     const hhmm = new Date(ts).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
-    const peak = isCoPeak(new Date(ts).getHours()*60 + new Date(ts).getMinutes());
+    const baseD = new Date(ts - offsetMin*60000);
+    const peak = isCoPeak(baseD.getHours()*60 + baseD.getMinutes());
     return `<div class="row">
       <div><div style="font-weight:600">${hhmm} 출발</div>
         <div class="muted">${i===0?"다음 출발":"그 다음"} · ${peak?"10분 간격":"20분 간격"}</div></div>
       <div class="arr-time ${c.cls}">${c.secs<=0?"곧 출발":c.mmss}</div>
     </div>`;
   }).join("");
-  el("coInfo").innerHTML = "운행 05:00~21:00 · 피크(05–07, 17–19시) 10분 · 그 외 20분 간격";
+}
+function renderCompany(){
+  renderCompanyInto("coBody", 0);        // 2청사 출발
+  renderCompanyInto("coNorthBody", 5);   // 북측타워 출발 = 2청사 +5분
+  if(el("coInfo")) el("coInfo").innerHTML = CO_INFO;
+  if(el("coNorthInfo")) el("coNorthInfo").innerHTML = "2청사 출발 5분 후 · " + CO_INFO;
 }
 
 // ================================================================
