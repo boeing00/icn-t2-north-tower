@@ -87,6 +87,7 @@
   .subhead{ font-size:14px; letter-spacing:-.01em; }
   .subhead .i{ width:17px; height:17px; }
   .subhead.sh-air{ color:var(--accent); } .subhead.sh-co{ color:var(--warn); }
+  .subhead.sh-res{ color:var(--good); }
   .divider{ margin:16px 0 13px; }
   .arr-time{ letter-spacing:-.01em; }
   .chip{ font-weight:600; }
@@ -121,6 +122,7 @@
     <symbol id="i-parking" viewBox="0 0 24 24"><path d="M6 3h6.5a5.25 5.25 0 0 1 0 10.5H9.5V21h-3.5V3Zm3.5 7.2h3a2.25 2.25 0 0 0 0-4.5h-3v4.5Z"/></symbol>
     <symbol id="i-bus" viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v9.5a2 2 0 0 1-1 1.73V19a1 1 0 0 1-1 1h-1.2a1 1 0 0 1-1-1v-1H7.2v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.77A2 2 0 0 1 3 14.5V5a2 2 0 0 1 2-2Zm1.2 4v3.6h4.9V7H6.2Zm6.7 0v3.6h4.9V7h-4.9ZM7.2 13.2a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8Zm9.6 0a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8Z"/></symbol>
     <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6h4.5a1 1 0 0 1 1 1v10h-6.5v-3.5h-2.5V21H4Zm3-12.5h2.2V6.3H7v2.2Zm4 0h2.2V6.3H11v2.2ZM7 13h2.2v-2.2H7V13Zm4 0h2.2v-2.2H11V13Zm-4 4.4h2.2v-2.2H7v2.2Zm9.8 0H19v-2.2h-2.2v2.2Z"/></symbol>
+    <symbol id="i-id" viewBox="0 0 24 24"><path d="M3 5.5h18a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Zm5.6 2.9a2.3 2.3 0 1 0 0 4.6 2.3 2.3 0 0 0 0-4.6ZM4.5 16.4h8.2v-.5c0-1.5-1.8-2.4-4.1-2.4s-4.1.9-4.1 2.4v.5ZM14.5 9.2h5v1.6h-5V9.2Zm0 3.2h5V14h-5v-1.6Z"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm.9-13H11v6l5.1 3.06.9-1.66-4.1-2.43V7Z"/></symbol>
   </svg>
 
@@ -158,6 +160,15 @@
       <summary>전체 시간표 · 주황=급행</summary>
       <div class="list-mini" id="tt_north"></div>
     </details>
+
+    <hr class="divider">
+    <div class="subhead sh-res"><svg class="i"><use href="#i-id"/></svg>상주직원셔틀</div>
+    <div id="res_north"><div class="empty">계산 중…</div></div>
+    <div class="muted" style="margin-top:6px">장기탑승장4 승차 → 제2여객터미널 여객탑승장 · 약 10분 소요</div>
+    <details>
+      <summary>전체 시간표</summary>
+      <div class="list-mini" id="ttres_north"></div>
+    </details>
   </div>
 
   <!-- ====== 2청사 출발 (공항셔틀 + 회사셔틀) ====== -->
@@ -166,7 +177,6 @@
 
     <div class="subhead sh-co"><svg class="i"><use href="#i-building"/></svg>회사셔틀</div>
     <div id="coBody"><div class="empty">계산 중…</div></div>
-    <div class="muted" id="coInfo" style="margin-top:6px"></div>
 
     <hr class="divider">
     <div class="subhead sh-air"><svg class="i"><use href="#i-bus"/></svg>공항셔틀</div>
@@ -175,6 +185,15 @@
     <details>
       <summary>전체 시간표</summary>
       <div class="list-mini" id="tt_t2"></div>
+    </details>
+
+    <hr class="divider">
+    <div class="subhead sh-res"><svg class="i"><use href="#i-id"/></svg>상주직원셔틀</div>
+    <div id="res_t2"><div class="empty">계산 중…</div></div>
+    <div class="muted" style="margin-top:6px">여객탑승장 승차 <b style="color:var(--good)">1층 4~5번 게이트</b> → 장기탑승장4 · 약 10분 소요</div>
+    <details>
+      <summary>전체 시간표</summary>
+      <div class="list-mini" id="ttres_t2"></div>
     </details>
   </div>
 
@@ -223,11 +242,14 @@ function ttList(key){
 function classForMin(m){ return m <= 3 ? "soon" : (m <= 8 ? "mid" : "far"); }
 function fmtCountdown(ts){
   const secs = Math.max(0, Math.round((ts - Date.now())/1000));
-  const mm = Math.floor(secs/60), ss = secs%60;
-  return { secs, cls: classForMin(secs/60), mmss:`${mm}:${String(ss).padStart(2,"0")}` };
+  const hh = Math.floor(secs/3600), mm = Math.floor(secs/60)%60, ss = secs%60;
+  return { secs, cls: classForMin(secs/60),
+    // 1시간 이상이면 h:mm:ss (상주직원셔틀 낮 공백 08:50~17:40 대비)
+    mmss: hh ? `${hh}:${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`
+             : `${Math.floor(secs/60)}:${String(ss).padStart(2,"0")}` };
 }
-function nextDep(key, from, count){
-  const list = ttList(key);
+// list = [{min,tag}, ...] (자정 이후 '분' 오름차순). 오늘 남은 편 → 부족하면 내일 첫 편으로 채움
+function nextFromList(list, from, count){
   const midnight = new Date(from); midnight.setHours(0,0,0,0);
   const nowMin = (from - midnight.getTime())/60000;
   const out = [];
@@ -235,6 +257,7 @@ function nextDep(key, from, count){
   for(let i=0; out.length<count && i<list.length; i++){ const d=list[i]; out.push({...d, ts: midnight.getTime()+86400000+d.min*60000}); }
   return out;
 }
+function nextDep(key, from, count){ return nextFromList(ttList(key), from, count); }
 function renderShuttle(key){
   const bodyEl = el(TT_META[key].body); if(!bodyEl) return;
   const deps = nextDep(key, Date.now(), 3);
@@ -249,10 +272,10 @@ function renderShuttle(key){
     </div>`;
   }).join("");
 }
-function renderTTtable(key){
-  const tEl = el(TT_META[key].table); if(!tEl) return;
+function renderTableInto(elId, list){
+  const tEl = el(elId); if(!tEl) return;
   const byH = {};
-  ttList(key).forEach(d=>{ const h=Math.floor(d.min/60)%24; (byH[h]=byH[h]||[]).push(d); });
+  list.forEach(d=>{ const h=Math.floor(d.min/60)%24; (byH[h]=byH[h]||[]).push(d); });
   let rows="";
   for(let h=0; h<24; h++){ const arr=byH[h]; if(!arr) continue;
     const cells = arr.map(d=>{ const mm=String(d.min%60).padStart(2,"0");
@@ -261,7 +284,34 @@ function renderTTtable(key){
   }
   tEl.innerHTML = rows;
 }
+function renderTTtable(key){ renderTableInto(TT_META[key].table, ttList(key)); }
 function renderShuttleAll(){ Object.keys(TT_META).forEach(renderShuttle); }
+
+// ---------- 상주직원 전용 셔틀 (인천공항공사 `26.8.20. 시행 · T2 구간) ----------
+// 1호차 장기탑승장4 → 여객탑승장 / 2호차 여객탑승장 → 장기탑승장4 · 양방향 출발시각 동일
+// 오전 05:30~08:50(11회) + 오후 17:40~22:20(15회) · 20분 간격 · 소요 10분
+const RES_RIDE = 10;
+const RES_TT = [330,350,370,390,410,430,450,470,490,510,530,
+                1060,1080,1100,1120,1140,1160,1180,1200,1220,1240,1260,1280,1300,1320,1340];
+const RES_LIST = RES_TT.map(m => ({ min:m, tag:"" }));
+const RES_META = {
+  north: { body:"res_north", table:"ttres_north" },   // 1호차 · 장기탑승장4 출발
+  t2:    { body:"res_t2",    table:"ttres_t2" }       // 2호차 · 여객탑승장 출발
+};
+function renderResident(key){
+  const bodyEl = el(RES_META[key].body); if(!bodyEl) return;
+  bodyEl.innerHTML = nextFromList(RES_LIST, Date.now(), 3).map((d,i)=>{
+    const c = fmtCountdown(d.ts);
+    const hh  = new Date(d.ts).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
+    const arr = new Date(d.ts + RES_RIDE*60000).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
+    return `<div class="row">
+      <div><div style="font-weight:600">${hh} 출발</div>
+        <div class="muted">${i===0?"다음 출발":"그 다음"} · ${arr} 도착</div></div>
+      <div class="arr-time ${c.cls}">${c.secs<=0?"곧 출발":c.mmss}</div>
+    </div>`;
+  }).join("");
+}
+function renderResidentAll(){ Object.keys(RES_META).forEach(renderResident); }
 
 // ---------- 회사 셔틀 (고정 시간표, API 없음) ----------
 // 05:00~07:00, 17:00~19:00 : 10분 간격 / 그 외 05:00~21:00 : 20분 간격
@@ -283,7 +333,6 @@ function nextCoDepartures(from, count, offsetMin){
   }
   return out;
 }
-const CO_INFO = "운행 04:00~21:00 · 피크(05–07, 17–19시) 10분 · 그 외 20분 간격";
 function renderCompanyInto(bodyId, offsetMin){
   const bodyEl = el(bodyId); if(!bodyEl) return;
   const deps = nextCoDepartures(Date.now(), 3, offsetMin);
@@ -303,8 +352,7 @@ function renderCompanyInto(bodyId, offsetMin){
 function renderCompany(){
   renderCompanyInto("coBody", 0);        // 2청사 출발
   renderCompanyInto("coNorthBody", 5);   // 북측타워 출발 = 2청사 +5분
-  if(el("coInfo")) el("coInfo").innerHTML = CO_INFO;
-  if(el("coNorthInfo")) el("coNorthInfo").innerHTML = "Terminal 2 출발 5분 후 · " + CO_INFO;
+  if(el("coNorthInfo")) el("coNorthInfo").innerHTML = "Terminal 2 출발 5분 후";
 }
 
 // ================================================================
@@ -402,6 +450,7 @@ setInterval(()=>{
   el("clockTxt").textContent = new Date().toLocaleString("ko-KR");
   renderShuttleAll();
   renderCompany();
+  renderResidentAll();
 }, 1000);
 
 function syncT1Btn(){ el("t1Btn").textContent = cfg.hideT1 ? "T1 보기" : "T1 숨기기"; }
@@ -427,8 +476,10 @@ el("clockTxt").textContent = new Date().toLocaleString("ko-KR");
 syncT1Btn();
 applyTabs();
 renderTTtable("north"); renderTTtable("t2");
+renderTableInto("ttres_north", RES_LIST); renderTableInto("ttres_t2", RES_LIST);
 renderShuttleAll();
 renderCompany();
+renderResidentAll();
 loadParking();
 setAuto(true);
 </script>
