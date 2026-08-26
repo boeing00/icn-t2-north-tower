@@ -20,6 +20,7 @@
     --bg:#0a0d13; --card:#141a25; --card2:#1c2434; --line:#293142;
     --txt:#eaeef7; --sub:#96a2b6; --accent:#6c8cff; --good:#34d399;
     --warn:#f5b53f; --bad:#f2727d; --chip:#212a3b;
+    --mustard:#e6d08c;   /* 연겨자색 — 탭 글자 */
   }
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body{ margin:0; background:var(--bg); color:var(--txt);
@@ -112,6 +113,28 @@
   .card{ border-radius:22px; box-shadow:0 14px 34px -20px rgba(0,0,0,.7); }
   button.primary, .tab.on{ background-image:linear-gradient(180deg, color-mix(in srgb,var(--accent) 86%, #fff), var(--accent)); }
   .arr-time{ text-shadow:0 0 24px color-mix(in srgb, currentColor 30%, transparent); }
+
+  /* ===== 탭 — 투명 유리(글래스) 버튼 + 연겨자색 글자 ===== */
+  .tab, .tab.on{ background-image:none; }          /* 위 accent 그라데이션 무효화 */
+  .tab{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    color:var(--mustard); font-weight:600; border-radius:14px;
+    background:rgba(255,255,255,.055);
+    border:1px solid rgba(255,255,255,.14);
+    -webkit-backdrop-filter:blur(14px) saturate(150%);
+    backdrop-filter:blur(14px) saturate(150%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 6px 18px -14px rgba(0,0,0,.9);
+  }
+  .tab .em{ font-size:18px; line-height:1; filter:saturate(1.05); }
+  .tab:hover{ background:rgba(255,255,255,.085); }
+  .tab.on{
+    color:var(--mustard); font-weight:800;
+    background:rgba(255,255,255,.13);
+    border-color:color-mix(in srgb, var(--mustard) 50%, transparent);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.20),
+               0 8px 22px -12px color-mix(in srgb, var(--mustard) 60%, transparent);
+  }
+  .tab:not(.on){ color:color-mix(in srgb, var(--mustard) 62%, transparent); }
 </style>
 </head>
 <body>
@@ -138,8 +161,8 @@
 
   <!-- ====== 탭 전환 (North Tower / Terminal 2) ====== -->
   <div class="tabs">
-    <button id="tabNorth" class="tab">North Tower</button>
-    <button id="tabT2" class="tab">Terminal 2</button>
+    <button id="tabNorth" class="tab"><span class="em">🗼</span>North Tower</button>
+    <button id="tabT2" class="tab"><span class="em">🏛️</span>Terminal 2</button>
   </div>
 
   <!-- ====== 공항 셔틀 · 북측타워(탑승장4) 출발 ====== -->
