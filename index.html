@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>인천공항 T2 · 장기 탑승장4 북측타워</title>
+<title>Crew Shuttle · ICN T2</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="ICN Parking" />
+<meta name="apple-mobile-web-app-title" content="Crew Shuttle" />
 <style>
   :root{
     color-scheme: dark;   /* 기기 설정과 무관하게 항상 다크 고정 */
@@ -74,6 +74,7 @@
     var(--bg); }
   h1{ font-size:21px; font-weight:800; letter-spacing:-.02em; display:flex; align-items:center; gap:10px; line-height:1.2; }
   h1 .i{ width:24px; height:24px; color:var(--accent); }
+  .sub-loc{ margin:5px 2px 0 36px; letter-spacing:-.01em; }   /* h1 아이콘 폭만큼 들여씀 */
   #clock{ display:flex; align-items:center; gap:6px; margin-top:4px; }
   #clock .i{ width:13px; height:13px; color:var(--sub); }
   .card{ border-radius:20px; box-shadow:0 8px 24px -16px rgba(8,12,20,.5); }
@@ -114,27 +115,34 @@
   button.primary, .tab.on{ background-image:linear-gradient(180deg, color-mix(in srgb,var(--accent) 86%, #fff), var(--accent)); }
   .arr-time{ text-shadow:0 0 24px color-mix(in srgb, currentColor 30%, transparent); }
 
-  /* ===== 탭 — 투명 유리(글래스) 버튼 + 연겨자색 글자 ===== */
+  /* ===== 탭 — 투명 유리(글래스) 버튼 + 연겨자색 글자 =====
+     시인도 핵심: 선택 여부를 '흰색 투명도'가 아니라 '겨자색 유무'로 구분한다.
+     비선택 = 차갑고 어두운 유리 / 선택 = 겨자색으로 물든 유리 + 밝은 테두리 + 글로우 */
   .tab, .tab.on{ background-image:none; }          /* 위 accent 그라데이션 무효화 */
   .tab{
     display:flex; align-items:center; justify-content:center; gap:8px;
-    color:var(--mustard); font-weight:600; border-radius:14px;
-    background:rgba(255,255,255,.055);
-    border:1px solid rgba(255,255,255,.14);
+    font-size:16.5px; font-weight:650; letter-spacing:-.01em; border-radius:14px;
+    padding:15px 12px;
+    color:#8d94a6;                                  /* 비선택: 색기 뺀 회색 */
+    background:rgba(255,255,255,.04);
+    border:1.5px solid rgba(255,255,255,.09);
     -webkit-backdrop-filter:blur(14px) saturate(150%);
     backdrop-filter:blur(14px) saturate(150%);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 6px 18px -14px rgba(0,0,0,.9);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
   }
-  .tab .em{ font-size:18px; line-height:1; filter:saturate(1.05); }
-  .tab:hover{ background:rgba(255,255,255,.085); }
+  .tab .em-i{ width:20px; height:20px; flex:none; }          /* SVG 아이콘은 currentColor 상속 */
+  .tab.on .em-i{ filter:drop-shadow(0 0 8px color-mix(in srgb, var(--mustard) 55%, transparent)); }
+  .tab:hover:not(.on){ background:rgba(255,255,255,.07); color:#aab2c4; }
   .tab.on{
     color:var(--mustard); font-weight:800;
-    background:rgba(255,255,255,.13);
-    border-color:color-mix(in srgb, var(--mustard) 50%, transparent);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.20),
-               0 8px 22px -12px color-mix(in srgb, var(--mustard) 60%, transparent);
+    background:linear-gradient(180deg,
+      color-mix(in srgb, var(--mustard) 26%, transparent),
+      color-mix(in srgb, var(--mustard) 13%, transparent));
+    border-color:color-mix(in srgb, var(--mustard) 80%, transparent);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.26),
+               0 10px 26px -10px color-mix(in srgb, var(--mustard) 55%, transparent);
+    text-shadow:0 0 16px color-mix(in srgb, var(--mustard) 40%, transparent);
   }
-  .tab:not(.on){ color:color-mix(in srgb, var(--mustard) 62%, transparent); }
 </style>
 </head>
 <body>
@@ -144,11 +152,14 @@
     <symbol id="i-parking" viewBox="0 0 24 24"><path d="M6 3h6.5a5.25 5.25 0 0 1 0 10.5H9.5V21h-3.5V3Zm3.5 7.2h3a2.25 2.25 0 0 0 0-4.5h-3v4.5Z"/></symbol>
     <symbol id="i-bus" viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v9.5a2 2 0 0 1-1 1.73V19a1 1 0 0 1-1 1h-1.2a1 1 0 0 1-1-1v-1H7.2v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.77A2 2 0 0 1 3 14.5V5a2 2 0 0 1 2-2Zm1.2 4v3.6h4.9V7H6.2Zm6.7 0v3.6h4.9V7h-4.9ZM7.2 13.2a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8Zm9.6 0a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8Z"/></symbol>
     <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6h4.5a1 1 0 0 1 1 1v10h-6.5v-3.5h-2.5V21H4Zm3-12.5h2.2V6.3H7v2.2Zm4 0h2.2V6.3H11v2.2ZM7 13h2.2v-2.2H7V13Zm4 0h2.2v-2.2H11V13Zm-4 4.4h2.2v-2.2H7v2.2Zm9.8 0H19v-2.2h-2.2v2.2Z"/></symbol>
+    <symbol id="i-rook" viewBox="0 -960 960 960"><path d="M160-80v-192q76-60 120-133t71-168h-48q-24 0-42-18t-18-42v-247h184v123h106v-123h184v247q0 24-18 42t-42 18h-48q26 95 70.5 168T800-272v192H160Zm60-60h520v-101q-87-79-131.5-171.5T547-573H412q-17 68-61.5 160.5T220-241v101Zm83-493h354v-187h-64v123H367v-123h-64v187Z"/></symbol>
+    <symbol id="i-airport" viewBox="0 -960 960 960"><path d="M285-80v-83l124-86v-172L80-288v-102l329-231v-188q0-29 21-50t50-21q29 0 50 21t21 50v188l329 231v102L551-421v172l123 86v83l-194-59-195 59Z"/></symbol>
     <symbol id="i-id" viewBox="0 0 24 24"><path d="M3 5.5h18a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Zm5.6 2.9a2.3 2.3 0 1 0 0 4.6 2.3 2.3 0 0 0 0-4.6ZM4.5 16.4h8.2v-.5c0-1.5-1.8-2.4-4.1-2.4s-4.1.9-4.1 2.4v.5ZM14.5 9.2h5v1.6h-5V9.2Zm0 3.2h5V14h-5v-1.6Z"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm.9-13H11v6l5.1 3.06.9-1.66-4.1-2.43V7Z"/></symbol>
   </svg>
 
-  <h1><svg class="i"><use href="#i-plane"/></svg>인천공항 T2 · 장기 탑승장4 북측타워</h1>
+  <h1><svg class="i"><use href="#i-plane"/></svg>Crew Shuttle</h1>
+  <div class="muted sub-loc">ICN T2 · 장기 탑승장4 북측타워</div>
   <div class="muted" id="clock"><svg class="i"><use href="#i-clock"/></svg><span id="clockTxt">—</span></div>
 
   <!-- ====== 주차 현황 (최상단) ====== -->
@@ -161,8 +172,8 @@
 
   <!-- ====== 탭 전환 (North Tower / Terminal 2) ====== -->
   <div class="tabs">
-    <button id="tabNorth" class="tab"><span class="em">🗼</span>North Tower</button>
-    <button id="tabT2" class="tab"><span class="em">🏛️</span>Terminal 2</button>
+    <button id="tabNorth" class="tab"><svg class="i em-i"><use href="#i-rook"/></svg>North Tower</button>
+    <button id="tabT2" class="tab"><svg class="i em-i"><use href="#i-airport"/></svg>Terminal 2</button>
   </div>
 
   <!-- ====== 공항 셔틀 · 북측타워(탑승장4) 출발 ====== -->
