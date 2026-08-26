@@ -90,6 +90,10 @@
   .subhead .i{ width:17px; height:17px; }
   .subhead.sh-air{ color:var(--accent); } .subhead.sh-co{ color:var(--warn); }
   .subhead.sh-res{ color:var(--good); }
+  /* 탑승장 배지 — currentColor를 써서 소속 섹션 색(회사=주황/상주직원=초록)을 그대로 물려받음 */
+  .subhead .gate{ font-size:11.5px; font-weight:700; letter-spacing:0; padding:3px 9px; border-radius:999px;
+    background:color-mix(in srgb, currentColor 15%, transparent);
+    border:1px solid color-mix(in srgb, currentColor 35%, transparent); }
   .divider{ margin:16px 0 13px; }
   .arr-time{ letter-spacing:-.01em; }
   .chip{ font-weight:600; }
@@ -210,7 +214,7 @@
   <div class="card" id="card_t2">
     <h2 class="big"><span class="ic ic-orange"><svg class="i"><use href="#i-bus"/></svg></span>Terminal 2 출발</h2>
 
-    <div class="subhead sh-co"><svg class="i"><use href="#i-building"/></svg>회사셔틀</div>
+    <div class="subhead sh-co"><svg class="i"><use href="#i-building"/></svg>회사셔틀<span class="gate">G7~8</span></div>
     <div id="coBody"><div class="empty">계산 중…</div></div>
 
     <hr class="divider">
@@ -223,9 +227,9 @@
     </details>
 
     <hr class="divider">
-    <div class="subhead sh-res"><svg class="i"><use href="#i-id"/></svg>상주직원셔틀</div>
+    <div class="subhead sh-res"><svg class="i"><use href="#i-id"/></svg>상주직원셔틀<span class="gate">G4~5</span></div>
     <div id="res_t2"><div class="empty">계산 중…</div></div>
-    <div class="muted" style="margin-top:6px">여객탑승장 승차 <b style="color:var(--good)">1층 4~5번 게이트</b> → 장기탑승장4 · 약 10분 소요</div>
+    <div class="muted" style="margin-top:6px">여객탑승장 1층 승차 → 장기탑승장4 · 약 10분 소요</div>
     <details>
       <summary>전체 시간표</summary>
       <div class="list-mini" id="ttres_t2"></div>
