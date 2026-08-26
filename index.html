@@ -114,9 +114,9 @@
   .card{ border-radius:22px; box-shadow:0 14px 34px -20px rgba(0,0,0,.7); }
   button.primary, .tab.on{ background-image:linear-gradient(180deg, color-mix(in srgb,var(--accent) 86%, #fff), var(--accent)); }
   .arr-time{ text-shadow:0 0 24px color-mix(in srgb, currentColor 30%, transparent); }
-  /* 카운트다운: 숫자는 크게, 단위(Hr/min/sec)는 작고 흐리게 — 좁은 폰에서도 한 줄 유지 */
-  .arr-time{ white-space:nowrap; font-size:23px; text-align:right; }
-  .arr-time .u{ font-size:.5em; font-weight:600; opacity:.62; margin-left:.08em; letter-spacing:0; }
+  /* 카운트다운: 숫자는 크게, 단위(Hr)만 작고 흐리게 — 좁은 폰에서도 한 줄 유지 */
+  .arr-time{ white-space:nowrap; text-align:right; }
+  .arr-time .u{ font-size:.5em; font-weight:600; opacity:.62; margin-left:.06em; letter-spacing:0; }
   .row > div:first-child{ min-width:0; }        /* 좌측 라벨이 먼저 줄어들도록 */
 
   /* ===== 탭 — 투명 유리(글래스) 버튼 + 연겨자색 글자 =====
@@ -278,11 +278,9 @@ function classForMin(m){ return m <= 3 ? "soon" : (m <= 8 ? "mid" : "far"); }
 function fmtCountdown(ts){
   const secs = Math.max(0, Math.round((ts - Date.now())/1000));
   const hh = Math.floor(secs/3600), mm = Math.floor(secs/60)%60, ss = secs%60;
-  const u = t => `<span class="u">${t}</span>`;   // 단위는 작게 — 숫자 가독성 우선
-  // 1시간 이상이면 "4Hr 13min 05sec", 미만이면 "18min 50sec"
-  const txt = hh
-    ? `${hh}${u("Hr")} ${String(mm).padStart(2,"0")}${u("min")} ${String(ss).padStart(2,"0")}${u("sec")}`
-    : `${Math.floor(secs/60)}${u("min")} ${String(ss).padStart(2,"0")}${u("sec")}`;
+  // 분:초는 항상 00:00, 1시간 이상일 때만 앞에 "00Hr"을 붙임 → "04Hr 13:05" / "18:50"
+  const clock = `${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+  const txt = hh ? `${String(hh).padStart(2,"0")}<span class="u">Hr</span> ${clock}` : clock;
   return { secs, cls: classForMin(secs/60), txt };
 }
 // list = [{min,tag}, ...] (자정 이후 '분' 오름차순). 오늘 남은 편 → 부족하면 내일 첫 편으로 채움
