@@ -96,7 +96,6 @@
   button.primary{ box-shadow:0 8px 18px -9px color-mix(in srgb,var(--accent) 85%, transparent); }
   button.primary:hover{ filter:brightness(1.06); }
   summary{ transition:color .15s; } summary:hover{ color:var(--txt); }
-  #t1Btn{ border-radius:999px; }
   .foot{ text-align:center; color:var(--sub); font-size:11px; line-height:1.7; margin:24px 4px 4px; }
   .foot a{ color:var(--accent); text-decoration:none; }
   .foot a:hover{ text-decoration:underline; }
@@ -131,9 +130,7 @@
 
   <!-- ====== 주차 현황 (최상단) ====== -->
   <div class="card">
-    <h2><span class="ic ic-green"><svg class="i"><use href="#i-parking"/></svg></span>주차면 현황
-      <button id="t1Btn" style="margin-left:auto;padding:5px 10px;font-size:12px">T1 보기</button>
-    </h2>
+    <h2><span class="ic ic-green"><svg class="i"><use href="#i-parking"/></svg></span>주차면 현황</h2>
     <div id="parkBody"><div class="empty">불러오는 중…</div></div>
     <div class="updated" id="parkUpdated"></div>
     <div class="err" id="parkErr"></div>
@@ -358,7 +355,7 @@ function renderCompany(){
 // ================================================================
 //  주차 현황 — 서버리스 함수 /api/parking 호출 (서비스키는 Vercel 환경변수에만)
 // ================================================================
-const defaults = { fPark:"T2 P", hideT1:true };
+const defaults = { fPark:"T2 P" };
 let cfg = Object.assign({}, defaults, JSON.parse(localStorage.getItem(LS) || "{}"));
 function saveCfg(){ localStorage.setItem(LS, JSON.stringify(cfg)); }
 function fillForm(){ el("fPark").value = cfg.fPark; }
@@ -385,7 +382,7 @@ async function loadParking(){
     const kw = cfg.fPark;
     const matched = items.filter(x => {
       const f = String(x.floor ?? "");
-      if(cfg.hideT1 && /(^|\s)T1/.test(f)) return false;
+      if(/(^|\s)T1/.test(f)) return false;   // 이 앱은 T2 전용 — T1은 항상 숨김
       return !kw || f.includes(kw);
     });
     matched.sort((a,b)=> String(b.floor??"").localeCompare(String(a.floor??""), "ko")); // P2 → P1 (내림차순)
@@ -453,15 +450,13 @@ setInterval(()=>{
   renderResidentAll();
 }, 1000);
 
-function syncT1Btn(){ el("t1Btn").textContent = cfg.hideT1 ? "T1 보기" : "T1 숨기기"; }
-el("t1Btn").onclick = ()=>{ cfg.hideT1 = !cfg.hideT1; saveCfg(); syncT1Btn(); loadParking(); };
 el("refreshBtn").onclick = loadParking;
 el("autoBtn").onclick = ()=> setAuto(!autoOn);
 el("saveBtn").onclick = ()=>{ readForm(); el("settings").open=false; loadParking(); };
 el("rawBtn").onclick = loadRaw;
 
 // ---------- 탭 전환 (North Tower / Terminal 2) ----------
-let activeTab = "both";
+let activeTab = "north";   // 시작 시 North Tower 하나만 (탭을 다시 누르면 둘 다 보기)
 function applyTabs(){
   el("card_north").style.display = activeTab!=="t2"    ? "" : "none";
   el("card_t2").style.display    = activeTab!=="north" ? "" : "none";
@@ -473,7 +468,6 @@ el("tabT2").onclick    = ()=>{ activeTab = activeTab==="t2"    ? "both" : "t2"; 
 
 // ---------- 시작 ----------
 el("clockTxt").textContent = new Date().toLocaleString("ko-KR");
-syncT1Btn();
 applyTabs();
 renderTTtable("north"); renderTTtable("t2");
 renderTableInto("ttres_north", RES_LIST); renderTableInto("ttres_t2", RES_LIST);
