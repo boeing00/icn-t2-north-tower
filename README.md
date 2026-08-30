@@ -34,12 +34,12 @@
 - 슬롯 마크업 — `<div class="adbox" id="adBox">` 의 `<ins class="kakao_ad_area">`
 - 로더 — `</body>` 직전 `t1.kakaocdn.net/kas/static/ba.min.js`
 
-**적용 절차**
+광고단위 ID는 `index.html` 의 `data-ad-unit` 에 있다. 매체는
+`https://icn-t2-north-tower.vercel.app` 로 등록.
 
-1. [애드핏](https://adfit.kakao.com) 에서 매체(웹사이트) 등록 → 심사 통과
-2. 광고단위 생성 (모바일 배너 `320x100`)
-3. 발급된 `DAN-...` 값을 `index.html` 의 `data-ad-unit="DAN-XXXXXXXXXXXXXXXX"` 자리에 교체
-4. 커밋 → Vercel 자동 재배포
+> 심사 항목이 **매체 콘텐츠 속성 · 광고 배치 · 광고 정상 호출 여부** 라서,
+> 심사를 요청하기 전에 실제 광고단위 ID가 배포돼 있어야 한다.
+> 플레이스홀더 상태로 심사를 넣으면 "정상 호출" 항목에서 걸린다.
 
 **동작 규칙 (건드릴 때 주의)**
 
