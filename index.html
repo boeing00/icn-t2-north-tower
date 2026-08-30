@@ -151,6 +151,19 @@
                0 10px 26px -10px color-mix(in srgb, var(--mustard) 55%, transparent);
     text-shadow:0 0 16px color-mix(in srgb, var(--mustard) 40%, transparent);
   }
+
+  /* ===== 광고 (Kakao AdFit) =====
+     애드핏 SDK는 슬롯이 화면상 '보이는' 상태여야 광고를 채운다
+     (부모가 display:none 이면 "Cannot visible ad on screen").
+     따라서 컨테이너는 항상 레이아웃하되, 미노출이면 ins 가 display:none 이라
+     높이 0 으로 잔여공간이 없다. 라벨·여백은 실제 채워졌을 때(.on)만 붙인다. */
+  .adbox{ display:block; text-align:center; line-height:0; }
+  /* 여백을 ins 자신에 걸어 둔다 — 미노출(display:none)이면 여백까지 함께 사라진다. */
+  .adbox ins.kakao_ad_area{ margin:18px auto 6px; max-width:100%; text-decoration:none; }
+  .adbox.on ins.kakao_ad_area{ margin:4px auto 6px; }
+  .adbox .adlabel{ display:none; font-size:10px; letter-spacing:.14em; color:var(--sub);
+    opacity:.55; text-transform:uppercase; line-height:normal; margin:18px 0 0; }
+  .adbox.on .adlabel{ display:block; }
 </style>
 </head>
 <body>
@@ -252,6 +265,18 @@
     </div>
     <div class="list-mini" id="rawOut"></div>
   </details>
+
+  <!-- ====== 광고 · Kakao AdFit (푸터 위) ======
+       광고단위 ID는 애드핏 대시보드에서 매체·광고단위 생성 후 발급되는 DAN-... 값으로 교체.
+       미노출(NO-AD)이면 ins 가 display:none 인 채로 남아 높이 0 — 화면에 흔적이 없다. -->
+  <div class="adbox" id="adBox">
+    <div class="adlabel">Sponsored</div>
+    <ins class="kakao_ad_area" style="display:none;width:100%;"
+         data-ad-unit="DAN-XXXXXXXXXXXXXXXX"
+         data-ad-width="320"
+         data-ad-height="100"
+         data-ad-onfail="adfitOnFail"></ins>
+  </div>
 
   <footer class="foot">
     © 2026 moonsikyim@gmail.com<br>
@@ -519,5 +544,30 @@ renderResidentAll();
 loadParking();
 setAuto(true);
 </script>
+
+<!-- ====== Kakao AdFit 로더 ======
+     ba.min.js 는 ins 태그가 DOM 에 있을 때 자동으로 광고를 채우고 display 를 푼다.
+     라벨은 실제로 채워졌을 때만 붙이려고 style 변화를 관찰한다(타임아웃 없음 —
+     늦게 채워져도 잡힌다). 관찰이 실패해도 여백은 ins 에 걸려 있어 레이아웃은 정상. -->
+<script>
+"use strict";
+function adfitOnFail(el){                     // NO-AD 콜백 (ins 객체가 인자)
+  var box = document.getElementById("adBox");
+  if (box) box.classList.remove("on");        // 라벨·여백 제거 (컨테이너 자체는 유지)
+}
+(function(){
+  var box = document.getElementById("adBox");
+  var ins = box && box.querySelector("ins.kakao_ad_area");
+  if (!ins || !window.MutationObserver) return;
+  var mo = new MutationObserver(function(){
+    if (ins.style.display && ins.style.display !== "none"){
+      box.classList.add("on");
+      mo.disconnect();
+    }
+  });
+  mo.observe(ins, { attributes:true, attributeFilter:["style"] });
+})();
+</script>
+<script async type="text/javascript" charset="utf-8" src="https://t1.kakaocdn.net/kas/static/ba.min.js"></script>
 </body>
 </html>
