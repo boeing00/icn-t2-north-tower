@@ -77,6 +77,14 @@
   .toolbar button{ flex:1; }
   .foot{ text-align:center; color:var(--sub); font-size:11px; line-height:1.7; margin:24px 4px 4px; }
   .foot a{ color:var(--accent); text-decoration:none; }
+
+  /* ===== 광고 (Kakao AdFit) — index.html과 동일 ===== */
+  .adbox{ display:block; text-align:center; line-height:0; max-width:320px; margin-left:auto; margin-right:auto; }
+  .adbox ins.kakao_ad_area{ margin:18px auto 6px; max-width:100%; text-decoration:none; }
+  .adbox.on ins.kakao_ad_area{ margin:4px auto 6px; }
+  .adbox .adlabel{ display:none; font-size:10px; letter-spacing:.14em; color:var(--sub);
+    opacity:.55; text-transform:uppercase; line-height:normal; margin:18px 0 0; }
+  .adbox.on .adlabel{ display:block; }
   .foot a:hover{ text-decoration:underline; }
 
   /* ===== 게이트 찾기 (pilot-utilities 웹앱에서 이식) ===== */
@@ -162,6 +170,16 @@
     <button class="primary" id="gBtn" style="width:100%;margin-top:10px">Search ▸</button>
 
     <div id="gOut" style="margin-top:14px"></div>
+  </div>
+
+  <!-- ====== 광고 · Kakao AdFit (푸터 위) — index.html과 동일 ====== -->
+  <div class="adbox" id="adBox">
+    <div class="adlabel">Sponsored</div>
+    <ins class="kakao_ad_area" style="display:none;width:100%;"
+         data-ad-unit="DAN-Olpfl7ku58KOcNR7"
+         data-ad-width="320"
+         data-ad-height="100"
+         data-ad-onfail="adfitOnFail"></ins>
   </div>
 
   <footer class="foot">
@@ -294,5 +312,27 @@ document.querySelectorAll('#gSeg button').forEach(b=>{
 });
 el('gFlt').focus();
 </script>
+
+<!-- ====== Kakao AdFit 로더 (index.html과 동일 로직) ====== -->
+<script>
+"use strict";
+function adfitOnFail(el){                     // NO-AD 콜백 (ins 객체가 인자)
+  var box = document.getElementById("adBox");
+  if (box) box.classList.remove("on");        // 라벨·여백 제거 (컨테이너 자체는 유지)
+}
+(function(){
+  var box = document.getElementById("adBox");
+  var ins = box && box.querySelector("ins.kakao_ad_area");
+  if (!ins || !window.MutationObserver) return;
+  var mo = new MutationObserver(function(){
+    if (ins.style.display && ins.style.display !== "none"){
+      box.classList.add("on");
+      mo.disconnect();
+    }
+  });
+  mo.observe(ins, { attributes:true, attributeFilter:["style"] });
+})();
+</script>
+<script async type="text/javascript" charset="utf-8" src="https://t1.kakaocdn.net/kas/static/ba.min.js"></script>
 </body>
 </html>
