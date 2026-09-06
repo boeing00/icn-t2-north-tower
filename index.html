@@ -75,10 +75,14 @@
   h1{ font-size:21px; font-weight:800; letter-spacing:-.02em; display:flex; align-items:center; gap:10px; line-height:1.2; }
   h1 .i{ width:24px; height:24px; color:var(--accent); }
   .sub-loc{ margin:5px 2px 0 36px; letter-spacing:-.01em; }   /* h1 아이콘 폭만큼 들여씀 */
-  .gate-link{ display:flex; align-items:center; gap:5px; margin-top:7px; font-size:13px;
-    font-weight:700; color:var(--accent); text-decoration:none; }
-  .gate-link .i{ width:14px; height:14px; }
-  .gate-link:active{ opacity:.7; }
+  .hdr-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .hdr-row h1{ margin:0; }
+  .gate-btn{ display:inline-flex; align-items:center; gap:6px; flex:none; font-size:12.5px;
+    font-weight:700; color:#fff; background:var(--accent); border-radius:999px; padding:9px 15px;
+    text-decoration:none; white-space:nowrap;
+    box-shadow:0 8px 18px -9px color-mix(in srgb,var(--accent) 85%, transparent); }
+  .gate-btn .i{ width:14px; height:14px; }
+  .gate-btn:active{ filter:brightness(1.1); }
   #clock{ display:flex; align-items:center; gap:6px; margin-top:4px; }
   #clock .i{ width:13px; height:13px; color:var(--sub); }
   .card{ border-radius:20px; box-shadow:0 8px 24px -16px rgba(8,12,20,.5); }
@@ -170,53 +174,6 @@
   .adbox .adlabel{ display:none; font-size:10px; letter-spacing:.14em; color:var(--sub);
     opacity:.55; text-transform:uppercase; line-height:normal; margin:18px 0 0; }
   .adbox.on .adlabel{ display:block; }
-
-  /* ===== 게이트 찾기 (pilot-utilities 웹앱에서 이식) ===== */
-  select{ font:inherit; width:100%; background:var(--card2); border:1px solid var(--line);
-    color:var(--txt); border-radius:10px; padding:10px 11px; }
-  #gSeg button.primary, #gSeg button{ flex:1; }
-  .g-hint{ background:var(--card2); border:1px solid var(--line); border-radius:12px;
-    padding:13px 14px; font-size:12.5px; color:var(--sub); margin-bottom:10px; line-height:1.6; }
-  .g-hint b{ color:var(--txt); font-weight:700; }
-  .g-lnk{ display:flex; align-items:center; gap:12px; width:100%; background:var(--card2);
-    border:1px solid var(--line); border-radius:14px; padding:13px 14px; text-decoration:none;
-    margin-bottom:8px; }
-  .g-lnk:active{ border-color:var(--accent); }
-  .g-lnk.pri{ border-color:var(--accent); }
-  .g-ico{ font-size:22px; width:28px; text-align:center; flex-shrink:0; }
-  .g-txt{ flex:1; min-width:0; }
-  .g-ttl{ font-size:14px; font-weight:700; color:var(--txt); margin-bottom:2px; }
-  .g-lnk.pri .g-ttl{ color:var(--accent); }
-  .g-sub{ font-size:11px; line-height:1.5; color:var(--sub); }
-  .g-arw{ font-size:16px; color:var(--sub); flex-shrink:0; }
-
-  .gl-card{ background:linear-gradient(135deg, var(--card2), var(--card)); border:1px solid var(--accent);
-    border-radius:16px; padding:16px; margin-bottom:12px; }
-  .gl-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:4px; }
-  .gl-flt{ font-size:19px; font-weight:800; color:var(--accent); letter-spacing:.02em; }
-  .gl-datebadge{ display:inline-block; font-size:10px; color:var(--sub); margin-left:6px; }
-  .gl-status{ font-size:11px; letter-spacing:.05em; padding:3px 9px; border-radius:20px;
-    border:1px solid var(--line); color:var(--sub); flex-shrink:0; }
-  .gl-status.go{ color:var(--good); border-color:var(--good); }
-  .gl-status.warn{ color:var(--warn); border-color:var(--warn); }
-  .gl-status.stop{ color:var(--bad); border-color:var(--bad); }
-  .gl-route{ font-size:12.5px; color:var(--sub); margin-bottom:14px; }
-  .gl-route b{ color:var(--txt); font-weight:600; }
-  .gl-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
-  .gl-cell{ background:var(--card2); border:1px solid var(--line); border-radius:11px;
-    padding:11px 10px; text-align:center; }
-  .gl-cell.hero{ grid-column:1/-1; border-color:var(--accent); }
-  .gl-cap{ font-size:10px; letter-spacing:.1em; color:var(--sub); margin-bottom:5px; }
-  .gl-val{ font-weight:800; color:var(--txt); line-height:1; font-variant-numeric:tabular-nums; }
-  .gl-cell.hero .gl-val{ font-size:38px; color:var(--accent); }
-  .gl-val.md{ font-size:16px; }
-  .gl-times{ display:flex; justify-content:space-between; font-size:12px; color:var(--sub);
-    font-variant-numeric:tabular-nums; }
-  .gl-times b{ color:var(--txt); font-weight:700; }
-  .gl-times .chg{ color:var(--warn); }
-  .gl-loading, .gl-empty{ font-size:12px; color:var(--sub); text-align:center; padding:20px 10px; }
-  .gl-empty b{ color:var(--txt); }
-  .gl-err{ font-size:11.5px; color:var(--bad); text-align:center; padding:14px 10px; }
 </style>
 </head>
 <body>
@@ -232,8 +189,10 @@
     <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm.9-13H11v6l5.1 3.06.9-1.66-4.1-2.43V7Z"/></symbol>
   </svg>
 
-  <h1><svg class="i"><use href="#i-plane"/></svg>Crew Shuttle</h1>
-  <a href="#" id="gateLink" class="sub-loc gate-link"><svg class="i"><use href="#i-airport"/></svg>Find my Gate ›</a>
+  <div class="hdr-row">
+    <h1><svg class="i"><use href="#i-plane"/></svg>Crew Shuttle</h1>
+    <a href="gate.html" class="gate-btn"><svg class="i"><use href="#i-airport"/></svg>Find My Gate</a>
+  </div>
   <div class="muted sub-loc">ICN T2 · 장기 탑승장4 북측타워</div>
   <div class="muted" id="clock"><svg class="i"><use href="#i-clock"/></svg><span id="clockTxt">—</span></div>
 
@@ -301,34 +260,6 @@
       <summary>전체 시간표</summary>
       <div class="list-mini" id="ttres_t2"></div>
     </details>
-  </div>
-
-  <!-- ====== 게이트 찾기 (편명으로 인천공항 실시간 게이트 조회) ====== -->
-  <div class="card" id="card_gate" style="display:none">
-    <h2 class="big"><span class="ic ic-blue"><svg class="i"><use href="#i-airport"/></svg></span>게이트 찾기</h2>
-
-    <label>편명 FLIGHT NO.</label>
-    <input id="gFlt" placeholder="KE001" autocapitalize="characters" />
-
-    <label>공항 AIRPORT</label>
-    <select id="gApt">
-      <option value="ICN" selected>인천 ICN</option>
-      <option value="GMP">김포 GMP</option>
-      <option value="PUS">김해 PUS</option>
-      <option value="CJU">제주 CJU</option>
-      <option value="TAE">대구 TAE</option>
-      <option value="CJJ">청주 CJJ</option>
-      <option value="INTL">해외 공항</option>
-    </select>
-
-    <div class="toolbar" id="gSeg">
-      <button class="primary" data-io="D">▲ 출발 DEP</button>
-      <button data-io="A">▼ 도착 ARR</button>
-    </div>
-
-    <button class="primary" id="gBtn" style="width:100%;margin-top:10px">Search ▸</button>
-
-    <div id="gOut" style="margin-top:14px"></div>
   </div>
 
   <div class="toolbar">
@@ -604,139 +535,16 @@ el("autoBtn").onclick = ()=> setAuto(!autoOn);
 el("saveBtn").onclick = ()=>{ readForm(); el("settings").open=false; loadParking(); };
 el("rawBtn").onclick = loadRaw;
 
-// ---------- 탭 전환 (North Tower / Terminal 2) + 게이트 찾기 링크 ----------
+// ---------- 탭 전환 (North Tower / Terminal 2) ----------
 let activeTab = "north";   // 시작 시 North Tower 하나만 (탭을 다시 누르면 둘 다 보기)
 function applyTabs(){
-  const isGate = activeTab === "gate";
-  el("card_north").style.display = (!isGate && activeTab!=="t2")    ? "" : "none";
-  el("card_t2").style.display    = (!isGate && activeTab!=="north") ? "" : "none";
-  el("card_gate").style.display  = isGate ? "" : "none";
-  el("tabNorth").classList.toggle("on", !isGate && (activeTab==="north" || activeTab==="both"));
-  el("tabT2").classList.toggle("on",    !isGate && (activeTab==="t2"    || activeTab==="both"));
+  el("card_north").style.display = activeTab!=="t2"    ? "" : "none";
+  el("card_t2").style.display    = activeTab!=="north" ? "" : "none";
+  el("tabNorth").classList.toggle("on", activeTab==="north" || activeTab==="both");
+  el("tabT2").classList.toggle("on",    activeTab==="t2"    || activeTab==="both");
 }
 el("tabNorth").onclick = ()=>{ activeTab = activeTab==="north" ? "both" : "north"; applyTabs(); };
 el("tabT2").onclick    = ()=>{ activeTab = activeTab==="t2"    ? "both" : "t2";    applyTabs(); };
-el("gateLink").onclick = (e)=>{ e.preventDefault(); activeTab = "gate"; applyTabs();
-  el("card_gate").scrollIntoView({behavior:"smooth", block:"start"}); };
-
-// ---------- 게이트 찾기 (pilot-utilities 웹앱에서 이식 — 인천공항 실시간 게이트 조회) ----------
-const GATE_PROXY_BASE = 'https://icn-gate-proxy.boeing00.workers.dev';
-let gIO = 'D';
-
-function gLink(url,ico,ttl,sub,pri){
-  return '<a class="g-lnk'+(pri?' pri':'')+'" href="'+url+'" target="_blank" rel="noopener">'
-    +'<span class="g-ico">'+ico+'</span>'
-    +'<span class="g-txt"><span class="g-ttl">'+ttl+'</span>'
-    +'<span class="g-sub">'+sub+'</span></span>'
-    +'<span class="g-arw">›</span></a>';
-}
-
-function runGate(){
-  const flt=el('gFlt').value.trim().toUpperCase().replace(/[\s-]+/g,'');
-  if(!flt){ el('gOut').innerHTML='<div class="g-hint">편명을 입력하세요.</div>'; return; }
-  const apt=el('gApt').value, io=gIO;
-  const q=encodeURIComponent(flt);
-  const io_ko=io==='D'?'출발':'도착';
-
-  let h=(apt==='ICN'?'<div id="glBox"></div>':'')
-    +'<div class="g-hint"><b>'+flt+'</b> · '+io_ko
-    +' — 아래 구글 검색에서 확인하세요.</div>';
-
-  h+=gLink('https://www.google.com/search?q='+q,'🔍','구글 검색',
-           '편명 카드로 터미널·게이트·지연 즉시 표시',true);
-
-  el('gOut').innerHTML=h;
-  if(apt==='ICN') loadGate(flt,io);
-}
-
-function loadGate(flight,io){
-  const box=el('glBox'); if(!box)return;
-  box.innerHTML='<div class="gl-loading">● 인천공항 운항정보 조회 중…</div>';
-  fetch(GATE_PROXY_BASE+'/?flight='+encodeURIComponent(flight)+'&io='+io)
-    .then(r=>r.json())
-    .then(d=>renderGate(box,d,flight,io))
-    .catch(e=>{box.innerHTML='<div class="gl-err">조회 실패 — 네트워크 또는 프록시 상태를 확인하세요.<br>'
-      +'('+String(e).slice(0,80)+')</div>';});
-}
-
-const gatePad2=s=>String(s).padStart(2,'0');
-function gateFmtDT(s){                   // 'YYYYMMDDHHMM' → 파싱
-  if(!s||s.length<12)return null;
-  return {ymd:s.slice(0,8), date:s.slice(4,6)+'/'+s.slice(6,8),
-    time:s.slice(8,10)+':'+s.slice(10,12), num:Number(s)};
-}
-// P02 와 P03 을 뒤집어 쓰지 말 것 — pilot-utilities 웹앱과 동일한 주의사항
-function gateTermName(t){
-  return t==='P01'?'제1터미널 T1':t==='P02'?'탑승동':t==='P03'?'제2터미널 T2':(t||'—');
-}
-function gateStatusClass(remark){
-  if(!remark)return '';
-  if(/지연|결항|취소|Delay|Cancel/i.test(remark))return 'stop';
-  if(/마감|Final|Closed/i.test(remark))return 'warn';
-  if(/출발|도착|탑승|Boarding|Departed|Arrived|Gate/i.test(remark))return 'go';
-  return '';
-}
-function renderGate(box,d,flight,io){
-  if(d&&d.error){
-    box.innerHTML='<div class="gl-err">인천공항 API 오류: '+(d.resultMsg||d.error)+'</div>';
-    return;
-  }
-  const items=(d&&d.items)||[];
-  if(!items.length){
-    box.innerHTML='<div class="gl-empty"><b>'+flight+'</b> — 인천공항 조회기간(D-3~D+6)에 '
-      +(io==='D'?'출발':'도착')+' 정보가 없습니다. 편명을 확인하거나 아래 링크를 이용하세요.</div>';
-    return;
-  }
-  const now=new Date();
-  const todayYmd=''+now.getFullYear()+gatePad2(now.getMonth()+1)+gatePad2(now.getDate());
-  const nowNum=Number(todayYmd+gatePad2(now.getHours())+gatePad2(now.getMinutes()));
-  const withDT=items.map(it=>({it,dt:gateFmtDT(it.scheduleDateTime)})).filter(x=>x.dt);
-  if(!withDT.length){box.innerHTML='<div class="gl-empty">시각 정보를 해석할 수 없습니다.</div>';return;}
-  let chosen=withDT.filter(x=>x.dt.ymd===todayYmd), dayLabel='';
-  if(!chosen.length){
-    const future=withDT.filter(x=>x.dt.num>=nowNum).sort((a,b)=>a.dt.num-b.dt.num);
-    if(future.length){chosen=[future[0]];dayLabel=future[0].dt.date;}
-    else{const past=withDT.slice().sort((a,b)=>b.dt.num-a.dt.num);chosen=[past[0]];dayLabel=past[0].dt.date+' 지난편';}
-  }
-  box.innerHTML=chosen.map(x=>gateCard(x.it,x.dt,io,dayLabel)).join('');
-}
-function gateCard(it,sdt,io,dayLabel){
-  const edt=gateFmtDT(it.estimatedDateTime);
-  const changed=edt&&sdt&&edt.num!==sdt.num;
-  const sc=gateStatusClass(it.remark);
-  const dirKo=io==='D'?'출발 →':'도착 ←';
-  const cells=[['TERMINAL',gateTermName(it.terminalid),'md']];
-  if(io==='D') cells.push(['CHECK-IN',it.chkinrange||'—','md']);
-  else{cells.push(['BAGGAGE',it.carousel||'—','md']);cells.push(['EXIT',it.exitnumber||'—','md']);}
-  const cellHtml=cells.map(c=>'<div class="gl-cell"><div class="gl-cap">'+c[0]
-    +'</div><div class="gl-val '+c[2]+'">'+c[1]+'</div></div>').join('');
-  return '<div class="gl-card">'
-    +'<div class="gl-top"><span class="gl-flt">'+(it.flightId||'')
-      +(dayLabel?'<span class="gl-datebadge">'+dayLabel+'</span>':'')+'</span>'
-    +'<span class="gl-status '+sc+'">'+(it.remark||'예정')+'</span></div>'
-    +'<div class="gl-route">'+dirKo+' <b>'+(it.airport||'')+'</b> ('+(it.airportCode||'')+') · '
-      +(it.airline||'')+'</div>'
-    +'<div class="gl-grid">'
-    +'<div class="gl-cell hero"><div class="gl-cap">GATE</div><div class="gl-val">'+(it.gatenumber||'—')+'</div></div>'
-    +cellHtml
-    +'</div>'
-    +'<div class="gl-times"><span>SCHED <b>'+(sdt?sdt.time:'--:--')+'</b></span>'
-    +'<span class="'+(changed?'chg':'')+'">EST '+(edt?'<b>'+edt.time+'</b>':'--:--')
-      +(changed?' ▲변경':'')+'</span></div>'
-    +'</div>';
-}
-el('gBtn').onclick=runGate;
-el('gFlt').addEventListener('keydown',e=>{
-  if(e.key==='Enter'){e.target.blur();runGate();}
-});
-el('gApt').onchange=()=>{ if(el('gFlt').value.trim()) runGate(); };
-document.querySelectorAll('#gSeg button').forEach(b=>{
-  b.onclick=()=>{
-    gIO=b.dataset.io;
-    document.querySelectorAll('#gSeg button').forEach(x=>x.classList.toggle('primary',x===b));
-    if(el('gFlt').value.trim()) runGate();
-  };
-});
 
 // ---------- 시작 ----------
 el("clockTxt").textContent = new Date().toLocaleString("ko-KR");
