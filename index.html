@@ -75,14 +75,7 @@
   h1{ font-size:21px; font-weight:800; letter-spacing:-.02em; display:flex; align-items:center; gap:10px; line-height:1.2; }
   h1 .i{ width:24px; height:24px; color:var(--accent); }
   .sub-loc{ margin:5px 2px 0 36px; letter-spacing:-.01em; }   /* h1 아이콘 폭만큼 들여씀 */
-  .hdr-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-  .hdr-row h1{ margin:0; }
-  .gate-btn{ display:inline-flex; align-items:center; gap:6px; flex:none; font-size:12.5px;
-    font-weight:700; color:#fff; background:var(--accent); border-radius:999px; padding:9px 15px;
-    text-decoration:none; white-space:nowrap;
-    box-shadow:0 8px 18px -9px color-mix(in srgb,var(--accent) 85%, transparent); }
-  .gate-btn .i{ width:14px; height:14px; }
-  .gate-btn:active{ filter:brightness(1.1); }
+  .pagetabs{ margin-top:0; margin-bottom:16px; }
   #clock{ display:flex; align-items:center; gap:6px; margin-top:4px; }
   #clock .i{ width:13px; height:13px; color:var(--sub); }
   .card{ border-radius:20px; box-shadow:0 8px 24px -16px rgba(8,12,20,.5); }
@@ -138,7 +131,7 @@
   .tab{
     display:flex; align-items:center; justify-content:center; gap:8px;
     font-size:16.5px; font-weight:650; letter-spacing:-.01em; border-radius:14px;
-    padding:15px 12px;
+    padding:15px 12px; text-decoration:none;         /* .tab는 <button>과 <a> 둘 다에 쓰인다 */
     color:#8d94a6;                                  /* 비선택: 색기 뺀 회색 */
     background:rgba(255,255,255,.04);
     border:1.5px solid rgba(255,255,255,.09);
@@ -189,10 +182,12 @@
     <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm.9-13H11v6l5.1 3.06.9-1.66-4.1-2.43V7Z"/></symbol>
   </svg>
 
-  <div class="hdr-row">
-    <h1><svg class="i"><use href="#i-plane"/></svg>Crew Shuttle</h1>
-    <a href="gate.html" class="gate-btn"><svg class="i"><use href="#i-airport"/></svg>Find My Gate</a>
+  <div class="tabs pagetabs">
+    <a href="index.html" class="tab on"><svg class="i em-i"><use href="#i-plane"/></svg>Crew Shuttle</a>
+    <a href="gate.html" class="tab"><svg class="i em-i"><use href="#i-airport"/></svg>Find My Gate</a>
   </div>
+
+  <h1><svg class="i"><use href="#i-plane"/></svg>Crew Shuttle</h1>
   <div class="muted sub-loc">ICN T2 · 장기 탑승장4 북측타워</div>
   <div class="muted" id="clock"><svg class="i"><use href="#i-clock"/></svg><span id="clockTxt">—</span></div>
 
