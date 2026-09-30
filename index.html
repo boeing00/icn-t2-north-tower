@@ -160,13 +160,20 @@
      높이 0 으로 잔여공간이 없다. 라벨·여백은 실제 채워졌을 때(.on)만 붙인다. */
   /* 폭을 선언 사이즈(320)로 묶는다 — 애드핏 SDK 가 ins 에 width:100% 를 강제로 얹기 때문에
      컨테이너가 넓으면 320x100 소재가 그만큼 가로로 늘어난다(실측: 351x100). */
-  .adbox{ display:block; text-align:center; line-height:0; max-width:320px; margin-left:auto; margin-right:auto; }
-  /* 여백을 ins 자신에 걸어 둔다 — 미노출(display:none)이면 여백까지 함께 사라진다. */
-  .adbox ins.kakao_ad_area{ margin:18px auto 6px; max-width:100%; text-decoration:none; }
-  .adbox.on ins.kakao_ad_area{ margin:4px auto 6px; }
+  /* 화면 하단 고정 바. 스크롤과 무관하게 늘 같은 자리(운영정책 5.3.1 "배치 공간 고정").
+     광고가 채워졌을 때(.on)만 배경·여백이 생기고, 그때 html.ad-on 으로 body 아래에 같은 높이의
+     여백을 줘서 콘텐츠를 가리지 않는다. 폭은 선언 사이즈(320)로 묶는다 — SDK 가 ins 에
+     width:100% 를 강제로 얹어 컨테이너가 넓으면 소재가 늘어난다(실측: 351x100). */
+  .adbox{ position:fixed; left:0; right:0; bottom:0; z-index:40; max-width:320px; margin:0 auto;
+    text-align:center; line-height:0; }
+  .adbox.on{ padding:3px 0 calc(4px + env(safe-area-inset-bottom)); }
+  .adbox.on::before{ content:""; position:absolute; top:0; bottom:0; left:-100vw; right:-100vw; z-index:-1;
+    background:rgba(10,13,19,.96); border-top:1px solid var(--line); }
+  .adbox ins.kakao_ad_area{ margin:0 auto; max-width:100%; text-decoration:none; }
   .adbox .adlabel{ display:none; font-size:10px; letter-spacing:.14em; color:var(--sub);
-    opacity:.55; text-transform:uppercase; line-height:normal; margin:18px 0 0; }
+    opacity:.55; text-transform:uppercase; line-height:12px; margin:0 0 2px; }
   .adbox.on .adlabel{ display:block; }
+  html.ad-on body{ padding-bottom:calc(40px + 124px + env(safe-area-inset-bottom)); }  /* 원래 40px + 바 높이 */
 </style>
 </head>
 <body>
@@ -274,7 +281,7 @@
     <div class="list-mini" id="rawOut"></div>
   </details>
 
-  <!-- ====== 광고 · Kakao AdFit (푸터 위) ======
+  <!-- ====== 광고 · Kakao AdFit (화면 하단 고정 바) ======
        미노출(NO-AD)이면 ins 가 display:none 인 채로 남아 높이 0 — 화면에 흔적이 없다. -->
   <div class="adbox" id="adBox">
     <div class="adlabel">Sponsored</div>
@@ -561,7 +568,8 @@ setAuto(true);
 "use strict";
 function adfitOnFail(el){                     // NO-AD 콜백 (ins 객체가 인자)
   var box = document.getElementById("adBox");
-  if (box) box.classList.remove("on");        // 라벨·여백 제거 (컨테이너 자체는 유지)
+  if (box) box.classList.remove("on");        // 라벨·배경 제거 (컨테이너 자체는 유지)
+  document.documentElement.classList.remove("ad-on");  // 하단 여백도 회수
 }
 (function(){
   var box = document.getElementById("adBox");
@@ -570,6 +578,7 @@ function adfitOnFail(el){                     // NO-AD 콜백 (ins 객체가 인
   var mo = new MutationObserver(function(){
     if (ins.style.display && ins.style.display !== "none"){
       box.classList.add("on");
+      document.documentElement.classList.add("ad-on");  // 고정 바만큼 body 아래 여백
       mo.disconnect();
     }
   });
