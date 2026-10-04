@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
+<script>/* 삼성 인터넷은 화면에 고정된 광고를 첫 스크롤 때 숨긴다(컨테이너 id·class 를 지우고 display:none,
+   2026-10-04 실측). 거기서만 하단 고정 대신 푸터 위 인라인 배너로 둔다. */
+if(/SamsungBrowser/i.test(navigator.userAgent))document.documentElement.classList.add("ad-inline");</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Find My Gate · Crew Shuttle</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
@@ -93,6 +96,11 @@
     opacity:.55; text-transform:uppercase; line-height:12px; margin:0 0 2px; }
   .adbox.on .adlabel{ display:block; }
   html.ad-on body{ padding-bottom:calc(40px + 124px + env(safe-area-inset-bottom)); }  /* 원래 40px + 바 높이 */
+  /* 삼성 인터넷(html.ad-inline): 고정 해제 — 본문 흐름 안, 푸터 바로 위 배너 */
+  html.ad-inline .adbox{ position:static; margin:16px auto 0; }
+  html.ad-inline .adbox.on{ padding:3px 0 4px; }
+  html.ad-inline .adbox.on::before{ content:none; }
+  html.ad-inline.ad-on body{ padding-bottom:40px; }
   .foot a:hover{ text-decoration:underline; }
 
   /* ===== 게이트 찾기 (pilot-utilities 웹앱에서 이식) ===== */
